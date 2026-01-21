@@ -5,11 +5,11 @@ const Header = () => {
     <header className="flex justify-between items-center h-16 bg-gray-900 text-gray-200 px-5 border-b border-gray-800">
       <div className="flex items-center">
         <span className="text-2xl mr-2">{`{}`}</span>
-        <span className="font-bold text-xl mr-1">GARV</span>
+        <span className="font-bold text-xl mr-1">GARV THAKRE</span>
     
       </div>
-      <nav className="flex-grow mx-10">
-        <ul className="flex space-x-6">
+      <nav className="flex-grow mx-3">
+        <ul className="flex space-x-4">
           <li className="uppercase cursor-pointer hover:text-blue-400">HOME</li>
           <li className="uppercase cursor-pointer hover:text-blue-400">
             PROJECTS
