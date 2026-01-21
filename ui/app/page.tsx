@@ -4,6 +4,7 @@ import Hero from './components/hero'
 import Projects from './components/projects'
 import Experience from './components/Experience'
 import Awards from './components/awards'
+import Footer from './components/footer'
 interface Props {}
 
 const Page: NextPage<Props> = ({}) => {
@@ -14,6 +15,7 @@ const Page: NextPage<Props> = ({}) => {
      <Projects />
      <Experience />
      {/* <Awards /> */}
+     <Footer />
    <div>hello world</div>
   </div>
 }

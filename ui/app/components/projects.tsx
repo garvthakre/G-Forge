@@ -107,7 +107,7 @@ const Projects: NextPage = () => {
             Selected Backend Projects
           </h2>
           <p className="text-gray-400 max-w-2xl">
-            Systems and services I've built, focusing on scalability,
+            Systems and services I built, focusing on scalability,
             performance, and real-world backend challenges.
           </p>
         </div>
