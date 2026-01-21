@@ -3,6 +3,7 @@ import Header from './components/header'
 import Hero from './components/hero'
 import Projects from './components/projects'
 import Experience from './components/Experience'
+import Awards from './components/awards'
 interface Props {}
 
 const Page: NextPage<Props> = ({}) => {
@@ -12,6 +13,7 @@ const Page: NextPage<Props> = ({}) => {
      <Hero />
      <Projects />
      <Experience />
+     {/* <Awards /> */}
    <div>hello world</div>
   </div>
 }
