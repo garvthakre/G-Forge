@@ -4,6 +4,7 @@ import Hero from './components/hero'
 import Projects from './components/projects'
 import Experience from './components/Experience'
 import Awards from './components/awards'
+import Contact from './components/contact'
 import Footer from './components/footer'
 interface Props {}
 
@@ -16,6 +17,7 @@ const Page: NextPage<Props> = ({}) => {
      <Experience />
      {/* <Awards /> */}
      <Footer />
+     <Contact />
    <div>hello world</div>
   </div>
 }
