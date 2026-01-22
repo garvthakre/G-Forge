@@ -1,6 +1,8 @@
 "use client";
 import { NextPage } from "next";
 import { useState } from "react";
+import { useTheme } from "@/app/context/ThemeContext";
+import { THEMES } from "@/app/utils/themes";
 
 interface FormData {
   name: string;
@@ -19,6 +21,8 @@ interface Response {
 }
 
 const Contact: NextPage = () => {
+  const { theme } = useTheme();
+  const themeColors = THEMES[theme];
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -75,8 +79,18 @@ const Contact: NextPage = () => {
     setResponse(null);
   };
 
+  const bgClass = theme === "dark" ? "bg-gray-950" : "bg-white";
+  const inputBgClass =
+    theme === "dark"
+      ? "bg-gray-800 border-gray-700"
+      : "bg-white border-gray-300";
+  const buttonClass =
+    theme === "dark"
+      ? "border border-green-500 text-green-400 hover:bg-green-500 hover:text-gray-900"
+      : "border border-green-600 text-green-700 hover:bg-green-600 hover:text-white";
+
   return (
-    <section className="w-full bg-gray-950 py-20 px-5">
+    <section className={`w-full ${bgClass} py-20 px-5`}>
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
         <div className="mb-12">
