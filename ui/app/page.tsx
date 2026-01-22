@@ -19,7 +19,7 @@ const Page: NextPage<Props> = ({}) => {
       <Contact />
       <Footer />
 
-      <div>hello world</div>
+ 
     </div>
   );
 };
