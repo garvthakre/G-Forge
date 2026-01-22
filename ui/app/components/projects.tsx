@@ -240,7 +240,7 @@ const projectsData: Project[] = [
 
 const Projects: NextPage = () => {
   const { theme } = useTheme();
-  const themeColors = THEMES[theme];
+  const themeColors = THEMES[theme] ?? THEMES.dark;
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const toggleExpand = (id: string) => {

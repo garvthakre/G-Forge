@@ -8,7 +8,7 @@ import { THEMES } from "@/app/utils/themes";
 const Header = () => {
   const [hoveredNav, setHoveredNav] = useState<string | null>(null);
   const { theme, toggleTheme } = useTheme();
-  const themeColors = THEMES[theme];
+  const themeColors = THEMES[theme] ?? THEMES.dark;
 
   const navItems = ["HOME", "PROJECTS", "EXPERIENCE", "API LAB"];
 
@@ -28,7 +28,7 @@ const Header = () => {
     theme === "dark"
       ? "from-blue-400 to-cyan-400"
       : "from-green-600 to-green-700";
-
+  
   return (
     <header className={`relative ${headerBgClass} backdrop-blur-sm border-b`}>
       <div className="flex justify-between items-center h-20 px-8 max-w-7xl mx-auto">
@@ -124,9 +124,9 @@ const Header = () => {
                 ? "border border-purple-500/50 text-purple-300 hover:border-purple-400 hover:bg-purple-500/10"
                 : "border border-green-600 text-green-700 hover:bg-green-600 hover:text-white"
             }`}
-            title={`Switch to ${theme === "dark" ? "Swagger" : "Dark"} theme`}
+            title={`Switch to ${theme === "dark" ? "original" : "Dark"} theme`}
           >
-            {theme === "dark" ? "🟢 SWAGGER" : "🌙 DARK"}
+            {theme === "dark" ? "🟢 ORIGINAL" : "🌙 DARK"}
           </button>
 
           <button

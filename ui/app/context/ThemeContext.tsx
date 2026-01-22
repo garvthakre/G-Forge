@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-type Theme = "dark" | "swagger";
+type Theme = "dark" | "original";
 
 interface ThemeContextType {
   theme: Theme;
@@ -34,7 +34,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const toggleTheme = () => {
-    const newTheme = theme === "dark" ? "swagger" : "dark";
+    const newTheme = theme === "dark" ? "original" : "dark";
     setTheme(newTheme);
   };
 

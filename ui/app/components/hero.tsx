@@ -7,7 +7,7 @@ interface Props {}
 
 const Hero: NextPage<Props> = ({}) => {
   const { theme } = useTheme();
-  const themeColors = THEMES[theme];
+  const themeColors = THEMES[theme] ?? THEMES.dark;
 
   const bgClass = theme === "dark" ? "bg-gray-950" : "bg-white";
   const panelBgClass =

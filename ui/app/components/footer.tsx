@@ -6,7 +6,7 @@ import { THEMES } from "@/app/utils/themes";
 const Footer: NextPage = () => {
   const currentYear = new Date().getFullYear();
   const { theme } = useTheme();
-  const themeColors = THEMES[theme];
+  const themeColors = THEMES[theme] ?? THEMES.dark;
 
   const links = [
     { name: "GitHub", href: "https://github.com" },

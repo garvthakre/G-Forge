@@ -96,7 +96,7 @@ const experienceData: Experience[] = [
 const Experience: NextPage = () => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const { theme } = useTheme();
-  const themeColors = THEMES[theme];
+  const themeColors = THEMES[theme] ?? THEMES.dark;
 
   const toggleExpand = (id: string) => {
     setExpandedId(expandedId === id ? null : id);
