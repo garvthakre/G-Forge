@@ -161,6 +161,57 @@ const projectsData: Project[] = [
   github: "https://github.com/yourusername/queueflex",
   demo: "https://queueflex-demo.vercel.app"
 },
+{
+  id: "tribal-land-registry",
+  badge: "BLOCKCHAIN",
+  title: "Decentralized Tribal Land Registry",
+  description:
+    "Web3 land governance system combining blockchain immutability, AI-powered document analysis, and GPS verification to establish transparent, tamper-proof tribal land ownership records.",
+  techStack: ["Solidity", "React.js", "Hardhat", "IPFS/Pinata", "Express.js", "TailwindCSS"],
+  features: [
+    "Smart contract-based trustless verification workflow",
+    "AI-OCR extraction of survey numbers and boundaries",
+    "Real-time GPS coordinate tracing for field verification",
+    "Automated area tolerance matching algorithm",
+    "Decentralized document storage on IPFS",
+  ],
+  image: "/images/tribal-land-registry.png",
+  awards: "IIIT Naya Raipur Hackathon Runner-Up",
+  links: {
+    demo: "https://youtu.be/m40BFgn-Oqo"
+  }
+},
+{
+  id: "gemledger",
+  badge: "BLOCKCHAIN",
+  title: "GemLedger: Diamond Supply Chain Tracker",
+  description:
+    "Blockchain-based supply chain platform providing end-to-end diamond traceability with cryptographic proof of authenticity, enabling transparent ownership transfers across mining, processing, certification, and retail stages.",
+  techStack: ["Solidity", "React.js", "Node.js", "MongoDB", "Ethereum", "IPFS", "Hardhat"],
+  features: [
+    "Immutable on-chain diamond registry",
+    "Role-based access for 5 supply chain actors",
+    "Decentralized image storage via IPFS",
+    "Tamper-proof digital certification",
+  ],
+  image: "/images/gemledger.png",
+  awards: "IIT Bhilai Fintech Hackathon Winner",
+},
+{
+  id: "sheshield",
+  badge: "FULL-STACK",
+  title: "SheShield - Woman Safety Platform",
+  description:
+    "Emergency response application featuring intelligent threat detection through continuous gesture monitoring, location-based safety zones, and instant alert dispatching to emergency contacts.",
+  techStack: ["React.js", "Express.js", "MongoDB", "Twilio", "JWT", "Vite"],
+  features: [
+    "Whiteboard gesture recognition for discrete SOS",
+    "Real-time location tracking & safe zone alerts",
+    "Timer-based wellness checks with auto-escalation",
+    "Twilio-powered emergency SMS broadcasting",
+  ],
+  image: "/images/sheshield.png",
+},
 ];
 
 const Projects: NextPage = () => {
