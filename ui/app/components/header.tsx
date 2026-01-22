@@ -12,6 +12,14 @@ const Header = () => {
 
   const navItems = ["HOME", "PROJECTS", "EXPERIENCE", "API LAB"];
 
+  const handleNavClick = (item: string) => {
+    const sectionId = item.toLowerCase().replace(" ", "-");
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   const headerBgClass =
     theme === "dark"
       ? "bg-gradient-to-b from-gray-950 via-gray-900 to-gray-900 border-blue-900/30"
@@ -28,7 +36,7 @@ const Header = () => {
     theme === "dark"
       ? "from-blue-400 to-cyan-400"
       : "from-green-600 to-green-700";
-  
+
   return (
     <header className={`relative ${headerBgClass} backdrop-blur-sm border-b`}>
       <div className="flex justify-between items-center h-20 px-8 max-w-7xl mx-auto">
@@ -75,6 +83,7 @@ const Header = () => {
                 className="relative group"
               >
                 <span
+                  onClick={() => handleNavClick(item)}
                   className={`text-sm font-semibold ${
                     theme === "dark"
                       ? "text-gray-400 hover:text-blue-300"

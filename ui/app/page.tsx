@@ -12,11 +12,19 @@ const Page: NextPage<Props> = ({}) => {
   return (
     <div>
       <Header />
-      <Hero />
-      <Projects />
-      <Experience />
+      <div id="home">
+        <Hero />
+      </div>
+      <div id="projects">
+        <Projects />
+      </div>
+      <div id="experience">
+        <Experience />
+      </div>
       {/* <Awards /> */}
-      <Contact />
+      <div id="api-lab">
+        <Contact />
+      </div>
       <Footer />
 
  
