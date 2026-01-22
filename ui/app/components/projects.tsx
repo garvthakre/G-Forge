@@ -13,66 +13,154 @@ interface Project {
 }
 
 const projectsData: Project[] = [
-  {
-    id: "queue-system",
-    badge: "SERVICE",
-    title: "Queue Management System",
-    description:
-      "Handles high-throughput task processing with fault tolerance, atomic locking, and real-time status updates across distributed services.",
-    techStack: ["Node.js", "Redis", "PostgreSQL", "WebSocket", "Docker"],
-    features: [
-      "Distributed locking with Redis",
-      "Event-driven processing",
-      "Rate-limited public APIs",
-      "Structured logging & metrics",
-    ],
-    image: "/images/queue-system.png",
+{
+  id: "ai-rag-pdf-app",
+  badge: "SYSTEM",
+  title: "AI-Powered PDF RAG Chat",
+  description:
+    "Intelligent document interaction platform enabling multi-user collaboration and contextual AI conversations with PDFs using retrieval-augmented generation and vector embeddings.",
+  techStack: [
+    "React.js",
+    "Node.js",
+    "MongoDB",
+    "Pinecone",
+    "Groq API",
+    "Hugging Face",
+    "JWT"
+  ],
+  features: [
+    "Multi-model AI chat with LLAMA & Mixtral via Groq",
+    "Real-time collaborative spaces for shared PDF discussions",
+    "Vector-based semantic search using Pinecone embeddings",
+    "Collection management for structured multi-document queries",
+  ],
+  image: "/images/ai-rag-pdf-app.png",
+},
+{
+  id: "campusx",
+  badge: "FULL-STACK PLATFORM",
+  title: "CampusX - Anonymous Social & Economic Opportunities Platform",
+  description:
+    "A full-stack anonymous social networking platform for students featuring real-time chat, AI-powered moderation, economic opportunities marketplace, and integrated payment processing with multi-role architecture.",
+  techStack: [
+    "React",
+    "Redux Toolkit",
+    "Node.js/Express",
+    "MongoDB",
+    "Socket.IO",
+    "Google Gemini AI",
+    "TensorFlow.js (NSFW.js)",
+    "Firebase Storage",
+    "DodoPayments API",
+    "JWT Auth",
+    "Docker"
+  ],
+  features: [
+    "Real-time notifications & live chat with Socket.IO",
+    "AI-powered content moderation (NSFW detection)",
+    "Multi-tier user system (Students, Companies, Admin)",
+    "Integrated payment gateway with webhook processing",
+    "Economic opportunities marketplace with application tracking",
+    "Infinite scroll & lazy loading for performance",
+    "Google Gemini AI chatbot for campus information",
+    "Rate limiting & security middleware (Helmet, CORS)",
+    "Structured logging with Winston",
+    "Image upload with Firebase Storage",
+    "Anonymous posting with profile verification system"
+  ],
+  highlights: [
+    "Handles payment workflows with first/second payment tracking",
+    "Real-time WebSocket connections for instant notifications",
+    "AI content moderation preventing inappropriate uploads",
+    "Scalable architecture with pagination & infinite scroll",
+    "Type-safe Redux state management with RTK Query",
+    "Comprehensive error handling & validation"
+  ],
+  architecture: {
+    frontend: "React 18 with Redux Toolkit, React Router, Socket.IO client",
+    backend: "Express.js with MongoDB, Socket.IO server, JWT authentication",
+    ai: "Google Gemini AI for chatbot, TensorFlow.js for image moderation",
+    payments: "DodoPayments integration with webhook verification",
+    realtime: "Socket.IO for notifications, comments, and live updates",
+    storage: "Firebase for image uploads, MongoDB for all data persistence"
   },
+  userRoles: [
+    "Students: Post anonymously, apply for opportunities, earn through tasks",
+    "Companies: Create paid opportunities, manage applicants, process payments",
+    "Admin: Monitor all activities, verify payments, manage platform"
+  ],
+  image: "/images/becampusx.png",
+  liveUrl: "https://becampusx.com", // Add your actual URL
+  githubUrl: "https://github.com/yourusername/becampusx" // Add your repo URL
+},
+ 
   {
-    id: "api-gateway",
-    badge: "API",
-    title: "API Gateway & Rate Limiting",
-    description:
-      "Central entry point for microservices with intelligent routing, rate limiting, and request authentication at scale.",
-    techStack: ["Go", "Redis", "PostgreSQL", "gRPC", "Prometheus"],
-    features: [
-      "Token bucket rate limiting",
-      "JWT authentication & refresh flows",
-      "Service discovery integration",
-      "Request tracing & observability",
-    ],
-    image: "/images/api-gateway.png",
-  },
-  {
-    id: "real-time-db",
-    badge: "SYSTEM",
-    title: "Real-time Data Synchronization",
-    description:
-      "Multi-database sync engine ensuring consistency across MySQL, PostgreSQL, and MongoDB with sub-second latency.",
-    techStack: ["Rust", "Kafka", "PostgreSQL", "MongoDB", "MySQL"],
-    features: [
-      "Change Data Capture (CDC)",
-      "Conflict resolution with CRDT",
-      "Dead letter queue handling",
-      "Exactly-once delivery guarantee",
-    ],
-    image: "/images/realtime-sync.png",
-  },
-  {
-    id: "monitoring-stack",
-    badge: "SYSTEM",
-    title: "Distributed Monitoring & Alerting",
-    description:
-      "Centralized observability platform collecting metrics, logs, and traces from 200+ microservices with automated alerting.",
-    techStack: ["Prometheus", "Grafana", "ELK Stack", "Jaeger", "Kubernetes"],
-    features: [
-      "Time-series database optimization",
-      "Custom alert rule engine",
-      "Log aggregation & retention",
-      "Distributed tracing correlation",
-    ],
-    image: "/images/monitoring.png",
-  },
+  id: "booleanai",
+  badge: "FULL-STACK AI",
+  title: "BooleanAI - Smart Electronics Solver",
+  description:
+    "End-to-end AI solution for solving digital electronics problems. Users draw or upload questions, and the system intelligently identifies problem types (Boolean simplification, K-maps, code conversion, binary arithmetic) and returns structured solutions.",
+  techStack: ["React", "Node.js", "Express", "AI Vision API", "Canvas API", "Tailwind CSS"],
+  features: [
+    "Multi-format input (drawing + image upload)",
+    "AI-driven problem type classification",
+    "Dynamic result rendering based on problem type",
+    "Rate-limiting and error handling",
+    "Cross-device compatible interface",
+  ],
+  image: "/images/booleanai-demo.png",
+  demoVideo: "/videos/booleanai-demo.mp4",
+  liveUrl: "https://your-domain.com/booleanai",
+  githubUrl: "https://github.com/yourusername/booleanai",
+},
+{
+  id: "queue-management-system",
+  badge: "FULL-STACK",
+  title: "Queueflex - Multi-Service Queue Management Platform",
+  description:
+    "A microservices-based queue management system enabling real-time customer flow management across multiple service providers with role-based access control and distributed authentication.",
+  techStack: [
+    "Next.js",
+    "TypeScript",
+    "Python Flask",
+    "Node.js",
+    "gRPC",
+    "SQLite",
+    "JWT",
+    "Docker"
+  ],
+  features: [
+    "Microservices architecture with gRPC inter-service communication",
+    "JWT-based distributed authentication across 3 services",
+    "Role-based access control (Admin, Provider, Client)",
+    "Real-time queue position tracking with automatic recalculation",
+    "Service capacity management with configurable limits",
+    "Multi-tenant provider dashboard with service isolation",
+    "RESTful APIs with request interceptors and token validation",
+    "Position-aware queuing system with status management",
+  ],
+  architecture: [
+    "Auth Service (Node.js + gRPC): Centralized authentication with JWT verification",
+    "Admin Service (Python Flask): Service CRUD operations and provider management",
+    "Queue Service (Python Flask): Queue operations with service integration",
+    "Frontend (Next.js): Responsive UI with role-based routing"
+  ],
+  highlights: [
+    "Cross-language microservices communication using Protocol Buffers",
+    "Atomic queue operations with automatic position recalculation",
+    "Service-specific capacity enforcement and status filtering",
+    "Secure token propagation across service boundaries",
+  ],
+  metrics: [
+    "3 independent microservices with gRPC integration",
+    "Support for unlimited concurrent service providers",
+    "Real-time queue updates with <100ms latency",
+    "Role-based filtering reducing API response size by 60%",
+  ],
+  image: "/images/queueflex.png",
+  github: "https://github.com/yourusername/queueflex",
+  demo: "https://queueflex-demo.vercel.app"
+},
 ];
 
 const Projects: NextPage = () => {
