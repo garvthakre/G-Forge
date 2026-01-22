@@ -9,9 +9,9 @@ const Footer: NextPage = () => {
   const themeColors = THEMES[theme] ?? THEMES.dark;
 
   const links = [
-    { name: "GitHub", href: "https://github.com" },
-    { name: "LinkedIn", href: "https://linkedin.com" },
-    { name: "Email", href: "mailto:garv@example.com" },
+    { name: "GitHub", href: "https://github.com/garvthakre/" },
+    { name: "LinkedIn", href: "https://www.linkedin.com/in/garv-thakre/" },
+    { name: "Email", href: "garvthakre0@gmail.com" },
   ];
 
   const footerBgClass =
@@ -48,7 +48,7 @@ const Footer: NextPage = () => {
             <p
               className={`text-xs ${themeColors.text.muted} text-center md:text-left`}
             >
-              Backend engineer • API architect • Systems builder
+              Software engineer • API architect • Systems builder
             </p>
           </div>
 
