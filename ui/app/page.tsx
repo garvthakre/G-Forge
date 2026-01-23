@@ -26,8 +26,6 @@ const Page: NextPage<Props> = ({}) => {
         <Contact />
       </div>
       <Footer />
-
- 
     </div>
   );
 };

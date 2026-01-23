@@ -296,8 +296,20 @@ const Projects: NextPage = () => {
           {projectsData.map((project) => (
             <div
               key={project.id}
-              className={`${panelBgClass} border rounded-lg overflow-hidden transition-all duration-200 ${panelHoverClass}`}
+              className={`${panelBgClass} border rounded-lg overflow-hidden transition-all duration-200 ${panelHoverClass} relative`}
             >
+              {/* Winner Cup Badge - Top Right Corner */}
+              {project.awards && (
+                <div className="absolute top-4 right-4 z-10">
+                  <div className={`text-3xl drop-shadow-lg ${
+                    theme === "dark" 
+                      ? "bg-yellow-500 bg-opacity-10 border border-yellow-500 border-opacity-30" 
+                      : "bg-yellow-100 border border-yellow-300"
+                  } rounded-full w-12 h-12 flex items-center justify-center hover:scale-110 transition-transform`}>
+                    🏆
+                  </div>
+                </div>
+              )}
               {/* Project Header with Badge */}
               <div className={`px-6 pt-6 pb-4 border-b ${themeColors.border}`}>
                 <div className="flex items-center gap-3 mb-2">
