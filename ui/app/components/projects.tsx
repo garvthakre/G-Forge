@@ -6,7 +6,7 @@ import { THEMES } from "@/app/utils/themes";
 
 interface Project {
   id: string;
-  badge: "SERVICE" | "API" | "SYSTEM";
+  badge: "SERVICE" | "API" | "SYSTEM"| "FULL-STACK PLATFORM" | "FULL-STACK AI" | "FULL-STACK" | "BLOCKCHAIN";
   title: string;
   description: string;
   techStack: string[];
@@ -256,11 +256,36 @@ const Projects: NextPage = () => {
           return "border-blue-500 text-blue-400 bg-blue-500 bg-opacity-10";
         case "SYSTEM":
           return "border-purple-500 text-purple-400 bg-purple-500 bg-opacity-10";
+        case "FULL-STACK PLATFORM":
+          return "border-pink-500 text-pink-400 bg-pink-500 bg-opacity-10";
+        case "FULL-STACK AI":
+          return "border-amber-500 text-amber-400 bg-amber-500 bg-opacity-10";
+        case "FULL-STACK":
+          return "border-cyan-500 text-cyan-400 bg-cyan-500 bg-opacity-10";
+        case "BLOCKCHAIN":
+          return "border-orange-500 text-orange-400 bg-orange-500 bg-opacity-10";
         default:
           return "border-gray-500 text-gray-400 bg-gray-500 bg-opacity-10";
       }
     } else {
-      return "border-green-600 text-green-700 bg-green-50";
+      switch (badge) {
+        case "SERVICE":
+          return "border-green-600 text-green-700 bg-green-50";
+        case "API":
+          return "border-blue-600 text-blue-700 bg-blue-50";
+        case "SYSTEM":
+          return "border-purple-600 text-purple-700 bg-purple-50";
+        case "FULL-STACK PLATFORM":
+          return "border-pink-600 text-pink-700 bg-pink-50";
+        case "FULL-STACK AI":
+          return "border-amber-600 text-amber-700 bg-amber-50";
+        case "FULL-STACK":
+          return "border-cyan-600 text-cyan-700 bg-cyan-50";
+        case "BLOCKCHAIN":
+          return "border-orange-600 text-orange-700 bg-orange-50";
+        default:
+          return "border-gray-600 text-gray-700 bg-gray-50";
+      }
     }
   };
 
@@ -301,11 +326,13 @@ const Projects: NextPage = () => {
               {/* Winner Cup Badge - Top Right Corner */}
               {project.awards && (
                 <div className="absolute top-4 right-4 z-10">
-                  <div className={`text-3xl drop-shadow-lg ${
-                    theme === "dark" 
-                      ? "bg-yellow-500 bg-opacity-10 border border-yellow-500 border-opacity-30" 
-                      : "bg-yellow-100 border border-yellow-300"
-                  } rounded-full w-12 h-12 flex items-center justify-center hover:scale-110 transition-transform`}>
+                  <div
+                    className={`text-3xl drop-shadow-lg ${
+                      theme === "dark"
+                        ? "bg-yellow-500 bg-opacity-10 border border-yellow-500 border-opacity-30"
+                        : "bg-yellow-100 border border-yellow-300"
+                    } rounded-full w-12 h-12 flex items-center justify-center hover:scale-110 transition-transform`}
+                  >
                     🏆
                   </div>
                 </div>

@@ -6,7 +6,7 @@ import { THEMES } from "@/app/utils/themes";
 
 interface Experience {
   id: string;
-  badge: "ROLE" | "CONTRIBUTION" | "OSS";
+  badge: "ROLE" | "CONTRIBUTION" | "OSS"| "Intern" | "Participant";
   role: string;
   company: string;
   version: string;
@@ -19,7 +19,7 @@ interface Experience {
 const experienceData: Experience[] = [
   {
     id: "exp-1",
-    badge: "Backend Intern",
+    badge: "Intern",
     role: "Backend Developer",
     company: "Knowforth Tech LLP",
     version: "v2025.2",
@@ -71,7 +71,7 @@ const experienceData: Experience[] = [
   },
   {
     id: "exp-3",
-    badge: "Summer Intern",
+    badge: "Intern",
     role: "Frontend Developer",
     company: "National Institute of Technology, Raipur",
     version: "v2024.1",
