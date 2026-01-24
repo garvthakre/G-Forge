@@ -28,6 +28,8 @@ interface Project {
   awards?: string;
   links?: { [key: string]: string };
   metrics?: string[];
+  github?: string;
+  demo?: string;
 }
 
 const projectsData: Project[] = [
