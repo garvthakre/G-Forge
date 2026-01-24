@@ -6,7 +6,14 @@ import { THEMES } from "@/app/utils/themes";
 
 interface Project {
   id: string;
-  badge: "SERVICE" | "API" | "SYSTEM"| "FULL-STACK PLATFORM" | "FULL-STACK AI" | "FULL-STACK" | "BLOCKCHAIN";
+  badge:
+    | "SERVICE"
+    | "API"
+    | "SYSTEM"
+    | "FULL-STACK PLATFORM"
+    | "FULL-STACK AI"
+    | "FULL-STACK"
+    | "BLOCKCHAIN";
   title: string;
   description: string;
   techStack: string[];
