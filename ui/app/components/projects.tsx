@@ -27,6 +27,7 @@ interface Project {
   githubUrl?: string;
   awards?: string;
   links?: { [key: string]: string };
+  metrics?: string[];
 }
 
 const projectsData: Project[] = [
