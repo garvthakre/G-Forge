@@ -19,6 +19,14 @@ interface Project {
   techStack: string[];
   features: string[];
   image: string;
+  highlights?: string[];
+  architecture?: [string];
+  userRoles?: string[];
+  demoVideo?: string;
+  liveUrl?: string;
+  githubUrl?: string;
+  awards?: string;
+  links?: { [key: string]: string };
 }
 
 const projectsData: Project[] = [
