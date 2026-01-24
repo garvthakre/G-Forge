@@ -20,7 +20,7 @@ interface Project {
   features: string[];
   image: string;
   highlights?: string[];
-  architecture?: [string];
+  architecture?: { [key: string]: string } | string[];
   userRoles?: string[];
   demoVideo?: string;
   liveUrl?: string;
