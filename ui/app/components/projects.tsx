@@ -54,7 +54,7 @@ const projectsData: Project[] = [
       "Vector-based semantic search using Pinecone embeddings",
       "Collection management for structured multi-document queries",
     ],
-    image: "/images/ai-rag-pdf-app.png",
+    image: "/CollabGPT/collabgpt-mockup.png",
   },
   {
     id: "campusx",
@@ -109,7 +109,7 @@ const projectsData: Project[] = [
       "Companies: Create paid opportunities, manage applicants, process payments",
       "Admin: Monitor all activities, verify payments, manage platform",
     ],
-    image: "/images/becampusx.png",
+    image: "/Campusx/cx-opp-ui.png",
     liveUrl: "https://becampusx.com", // Add your actual URL
     githubUrl: "https://github.com/yourusername/becampusx", // Add your repo URL
   },
@@ -135,7 +135,7 @@ const projectsData: Project[] = [
       "Rate-limiting and error handling",
       "Cross-device compatible interface",
     ],
-    image: "/images/booleanai-demo.png",
+    image: "/Booleanai/booleanai-webui.png",
     demoVideo: "/videos/booleanai-demo.mp4",
     liveUrl: "https://your-domain.com/booleanai",
     githubUrl: "https://github.com/yourusername/booleanai",
@@ -184,7 +184,7 @@ const projectsData: Project[] = [
       "Real-time queue updates with <100ms latency",
       "Role-based filtering reducing API response size by 60%",
     ],
-    image: "/images/queueflex.png",
+    image: "/QueueFlex/queueflex.png",
     github: "https://github.com/yourusername/queueflex",
     demo: "https://queueflex-demo.vercel.app",
   },
@@ -209,7 +209,7 @@ const projectsData: Project[] = [
       "Automated area tolerance matching algorithm",
       "Decentralized document storage on IPFS",
     ],
-    image: "/images/tribal-land-registry.png",
+    image: "/Landregisteryapp/landregistry.png",
     awards: "IIIT Naya Raipur Hackathon Runner-Up",
     links: {
       demo: "https://youtu.be/m40BFgn-Oqo",
@@ -236,7 +236,7 @@ const projectsData: Project[] = [
       "Decentralized image storage via IPFS",
       "Tamper-proof digital certification",
     ],
-    image: "/images/gemledger.png",
+    image: "/gemledger/gemledger.png",
     awards: "IIT Bhilai Fintech Hackathon Winner",
   },
   {
@@ -252,7 +252,7 @@ const projectsData: Project[] = [
       "Timer-based wellness checks with auto-escalation",
       "Twilio-powered emergency SMS broadcasting",
     ],
-    image: "/images/sheshield.png",
+    image: "/Sheshield/sheshield.png",
   },
 ];
 
