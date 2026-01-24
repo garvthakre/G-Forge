@@ -16,6 +16,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "G-FORGE",
   description: "Personal Portfolio of Garv Thakre",
+  icons: {
+    icon: "/logo.png",
+    sizes: "32x32",
+    type: "image/png",
+  },
 };
 
 export default function RootLayout({
