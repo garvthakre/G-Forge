@@ -316,7 +316,7 @@ const Projects: NextPage = () => {
     theme === "dark" ? "hover:border-gray-700" : "hover:border-green-400";
 
   return (
-    <section className={`w-full ${bgClass} py-20 px-5`}>
+    <section className={`w-full ${bgClass} py-12 sm:py-16 md:py-20 px-4 sm:px-5`}>
       <div className="max-w-5xl mx-auto">
         {/* Section Header */}
         <div className="mb-12">
@@ -325,7 +325,7 @@ const Projects: NextPage = () => {
           >
             Projects
           </div>
-          <h2 className={`text-4xl font-bold ${themeColors.text.primary} mb-3`}>
+          <h2 className={`text-2xl sm:text-3xl md:text-4xl font-bold ${themeColors.text.primary} mb-3`}>
             Selected Backend Projects
           </h2>
           <p className={`${themeColors.text.secondary} max-w-2xl`}>
@@ -356,17 +356,17 @@ const Projects: NextPage = () => {
                 </div>
               )}
               {/* Project Header with Badge */}
-              <div className={`px-6 pt-6 pb-4 border-b ${themeColors.border}`}>
-                <div className="flex items-center gap-3 mb-2">
+              <div className={`px-4 sm:px-5 md:px-6 pt-4 sm:pt-5 md:pt-6 pb-3 sm:pb-4 border-b ${themeColors.border}`}>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
                   <span
                     className={`px-3 py-1 text-xs font-bold uppercase tracking-widest border rounded ${getBadgeColor(
                       project.badge,
-                    )}`}
+                    )} w-fit`}
                   >
                     {project.badge}
                   </span>
                   <h3
-                    className={`text-xl font-bold ${themeColors.text.primary}`}
+                    className={`text-lg sm:text-xl font-bold ${themeColors.text.primary} break-words`}
                   >
                     {project.title}
                   </h3>
@@ -374,10 +374,10 @@ const Projects: NextPage = () => {
               </div>
 
               {/* Split Layout: Image + Info */}
-              <div className="grid grid-cols-3 gap-6 p-6">
-                {/* Left: Image Panel (30-35%) */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 p-4 sm:p-5 md:p-6">
+                {/* Left: Image Panel (30-35%) - Hidden on mobile */}
                 <div
-                  className={`col-span-1 ${panelBgClass} rounded border overflow-hidden h-64`}
+                  className={`hidden lg:block col-span-1 ${panelBgClass} rounded border overflow-hidden h-64`}
                 >
                   <div
                     className={`w-full h-full ${
@@ -398,11 +398,11 @@ const Projects: NextPage = () => {
                 </div>
 
                 {/* Right: Project Info Panel (65-70%) */}
-                <div className="col-span-2 flex flex-col justify-between">
+                <div className="col-span-1 lg:col-span-2 flex flex-col justify-between">
                   {/* Description */}
                   <div className="mb-4">
                     <p
-                      className={`${themeColors.text.secondary} text-sm leading-relaxed`}
+                      className={`${themeColors.text.secondary} text-sm leading-relaxed break-words`}
                     >
                       {project.description}
                     </p>
@@ -410,7 +410,7 @@ const Projects: NextPage = () => {
 
                   {/* Tech Stack */}
                   <div className="mb-4">
-                    <div className={`text-xs ${themeColors.text.secondary}`}>
+                    <div className={`text-xs ${themeColors.text.secondary} break-words`}>
                       <span className={themeColors.text.muted}>Tech:</span>{" "}
                       {project.techStack.join(" · ")}
                     </div>
@@ -441,7 +441,7 @@ const Projects: NextPage = () => {
 
                   {/* Action Buttons */}
                   <div
-                    className={`flex gap-3 pt-4 border-t ${themeColors.border}`}
+                    className={`flex flex-col sm:flex-row gap-2 sm:gap-3 pt-4 border-t ${themeColors.border}`}
                   >
                     <button
                       className={`px-4 py-2 transition font-medium text-xs rounded ${
@@ -478,13 +478,13 @@ const Projects: NextPage = () => {
               {/* Expandable Details */}
               {expandedId === project.id && (
                 <div
-                  className={`px-6 py-6 border-t ${themeColors.border} ${
+                  className={`px-4 sm:px-5 md:px-6 py-4 sm:py-5 md:py-6 border-t ${themeColors.border} ${
                     theme === "dark"
                       ? "bg-gray-800 bg-opacity-30"
                       : "bg-green-50 bg-opacity-50"
                   }`}
                 >
-                  <div className="grid grid-cols-2 gap-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
                     {/* Left: Endpoints */}
                     <div>
                       <div className="text-xs uppercase tracking-widest text-gray-500 mb-4">
