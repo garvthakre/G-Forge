@@ -90,14 +90,14 @@ const Contact: NextPage = () => {
       : "border border-green-600 text-green-700 hover:bg-green-600 hover:text-white";
 
   return (
-    <section className={`w-full ${bgClass} py-20 px-5`}>
+    <section className={`w-full ${bgClass} py-12 sm:py-16 md:py-20 px-4 sm:px-5`}>
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
         <div className="mb-12">
           <div className="text-xs uppercase tracking-widest text-gray-500 mb-3">
             Contact
           </div>
-          <h2 className="text-4xl font-bold text-white mb-3">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3">
             Contact / API Request
           </h2>
           <p className="text-gray-400 max-w-2xl">
@@ -108,12 +108,12 @@ const Contact: NextPage = () => {
         {/* Two-Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Column: Request Definition */}
-          <div className="bg-gray-900 border border-gray-800 rounded-lg p-8">
+          <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 sm:p-6 md:p-8">
             <div className="mb-6">
               <div className="text-xs uppercase tracking-widest text-gray-500 mb-3">
                 Endpoint
               </div>
-              <div className="font-mono text-lg mb-2">
+              <div className="font-mono text-base sm:text-lg mb-2 break-all">
                 <span className="text-green-400">POST</span>{" "}
                 <span className="text-gray-300">/contact</span>
               </div>
@@ -126,7 +126,7 @@ const Contact: NextPage = () => {
               <div className="text-xs uppercase tracking-widest text-gray-500 mb-3">
                 Request Body
               </div>
-              <div className="bg-gray-800 rounded p-4 font-mono text-xs text-gray-300 overflow-x-auto">
+              <div className="bg-gray-800 rounded p-3 sm:p-4 font-mono text-xs text-gray-300 overflow-x-auto break-all">
                 <div>
                   <span className="text-blue-400">{"{"}</span>
                 </div>
@@ -179,7 +179,7 @@ const Contact: NextPage = () => {
           </div>
 
           {/* Right Column: Request Execution */}
-          <div className="bg-gray-900 border border-gray-800 rounded-lg p-8">
+          <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 sm:p-6 md:p-8">
             <div className="mb-6">
               <div className="text-xs uppercase tracking-widest text-gray-500 mb-4">
                 Request Execution
@@ -236,7 +236,7 @@ const Contact: NextPage = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-3 pt-4">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-4">
                 <button
                   type="submit"
                   disabled={loading}
