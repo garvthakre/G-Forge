@@ -30,42 +30,42 @@ const Header = () => {
   const accentColor = theme === "dark" ? "text-blue-300" : "text-green-700";
   const accentGradient =
     theme === "dark"
-      ? "from-blue-400 to-cyan-400"
+      ? "from-cyan-400 to-blue-400"
       : "from-green-600 to-green-700";
   const accentUnderline =
     theme === "dark"
-      ? "from-blue-400 to-cyan-400"
+      ? "from-cyan-400 to-blue-400"
       : "from-green-600 to-green-700";
 
   return (
     <header className={`relative ${headerBgClass} backdrop-blur-sm border-b`}>
       <div className="flex justify-between items-center h-20 px-8 max-w-7xl mx-auto">
         {/* Logo Section */}
-        <div className="flex items-center gap-3 group cursor-pointer">
+        <div className="flex items-center gap-3 group cursor-pointer hover:scale-105 transition-transform">
           <div className="relative">
             <div
               className={`absolute inset-0 ${
-                theme === "dark" ? "bg-blue-500/20" : "bg-green-200/30"
-              } rounded-lg blur-md ${
+                theme === "dark" ? "bg-cyan-500/30" : "bg-green-200/30"
+              } rounded-lg blur-lg ${
                 theme === "dark"
-                  ? "group-hover:bg-blue-500/40"
+                  ? "group-hover:bg-cyan-500/50"
                   : "group-hover:bg-green-200/50"
               } transition-all duration-300`}
             ></div>
             <span
-              className={`relative text-2xl font-bold bg-gradient-to-r ${accentGradient} bg-clip-text text-transparent`}
+              className={`relative text-3xl font-black bg-gradient-to-r ${accentGradient} bg-clip-text text-transparent`}
             >
               {`{}`}
             </span>
           </div>
           <div className="hidden sm:flex flex-col">
             <span
-              className={`font-bold text-lg ${themeColors.text.primary} group-hover:${accentColor} transition-colors duration-300`}
+              className={`font-black text-xl ${themeColors.text.primary} group-hover:text-cyan-300 transition-colors duration-300`}
             >
               GARV THAKRE
             </span>
             <span
-              className={`text-xs ${themeColors.text.muted} group-hover:text-green-600 transition-colors duration-300`}
+              className={`text-xs font-semibold ${themeColors.text.muted} group-hover:text-cyan-400 transition-colors duration-300`}
             >
               Developer
             </span>
@@ -84,9 +84,9 @@ const Header = () => {
               >
                 <span
                   onClick={() => handleNavClick(item)}
-                  className={`text-sm font-semibold ${
+                  className={`text-sm font-bold tracking-wide ${
                     theme === "dark"
-                      ? "text-gray-400 hover:text-blue-300"
+                      ? "text-gray-300 hover:text-cyan-300"
                       : "text-gray-600 hover:text-green-700"
                   } cursor-pointer transition-colors duration-300`}
                 >

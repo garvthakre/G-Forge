@@ -8,25 +8,25 @@ export const THEMES = {
       hover: "hover:bg-gray-800",
     },
     text: {
-      primary: "text-gray-100",
-      secondary: "text-gray-400",
+      primary: "text-white",
+      secondary: "text-gray-300",
       muted: "text-gray-500",
     },
     border: "border-gray-800",
     accent: {
-      primary: "border-blue-500/50 text-blue-300",
-      bg: "bg-blue-500/10",
-      hover: "hover:border-blue-400 hover:bg-blue-500/20",
+      primary: "border-cyan-500/50 text-cyan-300",
+      bg: "bg-cyan-500/10",
+      hover: "hover:border-cyan-400 hover:bg-cyan-500/20",
     },
     button: {
       primary:
-        "border border-blue-500/50 text-blue-300 hover:border-blue-400 hover:bg-blue-500/10",
+        "border border-cyan-500/50 text-cyan-300 hover:border-cyan-400 hover:bg-cyan-500/10",
       secondary:
-        "border border-green-500/50 text-green-400 hover:border-green-400 hover:bg-green-500/10",
+        "border border-emerald-500/50 text-emerald-400 hover:border-emerald-400 hover:bg-emerald-500/10",
     },
     badge: {
-      blue: "border-blue-500 text-blue-400 bg-blue-500 bg-opacity-10",
-      green: "border-green-500 text-green-400 bg-green-500 bg-opacity-10",
+      blue: "border-cyan-500 text-cyan-400 bg-cyan-500 bg-opacity-10",
+      green: "border-emerald-500 text-emerald-400 bg-emerald-500 bg-opacity-10",
       purple: "border-purple-500 text-purple-400 bg-purple-500 bg-opacity-10",
     },
   },
