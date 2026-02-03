@@ -17,7 +17,7 @@ const Hero: NextPage<Props> = ({}) => {
 
   return (
     <section
-      className={`w-full ${bgClass} py-20 px-5 relative overflow-hidden`}
+      className={`w-full ${bgClass} py-12 sm:py-16 md:py-20 px-4 sm:px-5 relative overflow-hidden`}
     >
       {/* Animated background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-purple-500/5 pointer-events-none"></div>
@@ -33,19 +33,19 @@ const Hero: NextPage<Props> = ({}) => {
             </div>
 
             <h1
-              className={`text-7xl font-black mb-4 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent leading-tight`}
+              className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-4 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent leading-tight break-words`}
             >
               GARV THAKRE
             </h1>
 
             <p
-              className={`text-2xl font-bold ${themeColors.text.secondary} mb-2`}
+              className={`text-xl sm:text-2xl font-bold ${themeColors.text.secondary} mb-2`}
             >
               Backend & Systems Architect
             </p>
 
             <p
-              className={`${themeColors.text.secondary} mb-10 leading-relaxed max-w-lg text-lg`}
+              className={`${themeColors.text.secondary} mb-6 sm:mb-10 leading-relaxed max-w-lg text-base sm:text-lg`}
             >
               I design scalable backend systems with a focus on performance,
               reliability, and clean architecture. Specializing in distributed
@@ -53,7 +53,7 @@ const Hero: NextPage<Props> = ({}) => {
             </p>
 
             {/* Primary Action Buttons */}
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <button
                 className={`px-6 py-3 transition font-bold text-sm rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 text-gray-950 hover:shadow-lg hover:shadow-cyan-500/50 hover:scale-105`}
               >
@@ -69,7 +69,7 @@ const Hero: NextPage<Props> = ({}) => {
 
           {/* Right Column — Swagger-Inspired Info Panel */}
           <div
-            className={`${panelBgClass} border rounded-xl p-8 backdrop-blur-sm`}
+            className={`${panelBgClass} border rounded-xl p-4 sm:p-6 md:p-8 backdrop-blur-sm`}
           >
             <div
               className={`text-xs uppercase tracking-widest ${themeColors.text.muted} mb-6 font-bold`}
