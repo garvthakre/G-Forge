@@ -132,7 +132,7 @@ const Experience: NextPage = () => {
       : "border-gray-300 bg-green-50 bg-opacity-50";
 
   return (
-    <section className={`w-full ${bgClass} py-20 px-5`}>
+    <section className={`w-full ${bgClass} py-12 sm:py-16 md:py-20 px-4 sm:px-5`}>
       <div className="max-w-4xl mx-auto">
         {/* Section Header */}
         <div className="mb-12">
@@ -141,7 +141,7 @@ const Experience: NextPage = () => {
           >
             Experience
           </div>
-          <h2 className={`text-4xl font-bold ${themeColors.text.primary} mb-3`}>
+          <h2 className={`text-2xl sm:text-3xl md:text-4xl font-bold ${themeColors.text.primary} mb-3`}>
             Professional Experience
           </h2>
           <p className={`${themeColors.text.secondary} max-w-2xl`}>
@@ -159,20 +159,20 @@ const Experience: NextPage = () => {
               {/* Entry Header */}
               <button
                 onClick={() => toggleExpand(exp.id)}
-                className={`w-full px-6 py-5 text-left ${panelHoverBgClass} transition`}
+                className={`w-full px-4 sm:px-5 md:px-6 py-4 sm:py-5 text-left ${panelHoverBgClass} transition`}
               >
                 <div className="flex items-start justify-between mb-3">
-                  <div className="flex items-center gap-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 flex-1">
                     <span
                       className={`px-3 py-1 text-xs font-bold uppercase tracking-widest border rounded ${getBadgeColor(
                         exp.badge,
-                      )}`}
+                      )} w-fit flex-shrink-0`}
                     >
                       {exp.badge}
                     </span>
-                    <div>
+                    <div className="flex-1 min-w-0">
                       <div
-                        className={`text-lg font-bold ${themeColors.text.primary}`}
+                        className={`text-base sm:text-lg font-bold ${themeColors.text.primary} break-words`}
                       >
                         {exp.role} — {exp.company}
                       </div>
@@ -182,7 +182,7 @@ const Experience: NextPage = () => {
                     </div>
                   </div>
                   <span
-                    className={`${themeColors.text.secondary} text-lg flex-shrink-0`}
+                    className={`${themeColors.text.secondary} text-lg flex-shrink-0 ml-2`}
                   >
                     {expandedId === exp.id ? "−" : "+"}
                   </span>
@@ -190,15 +190,15 @@ const Experience: NextPage = () => {
               </button>
 
               {/* Metadata Row */}
-              <div className={`px-6 py-3 border-t ${metadataBgClass}`}>
+              <div className={`px-4 sm:px-5 md:px-6 py-3 border-t ${metadataBgClass}`}>
                 <div
                   className={`flex flex-col gap-2 text-xs ${themeColors.text.secondary}`}
                 >
-                  <div>
+                  <div className="break-words">
                     <span className={themeColors.text.muted}>Duration:</span>{" "}
                     {exp.duration}
                   </div>
-                  <div>
+                  <div className="break-words">
                     <span className={themeColors.text.muted}>Stack:</span>{" "}
                     {exp.stack.join(" · ")}
                   </div>
@@ -206,7 +206,7 @@ const Experience: NextPage = () => {
               </div>
 
               {/* Responsibilities */}
-              <div className={`px-6 py-5 border-t ${themeColors.border}`}>
+              <div className={`px-4 sm:px-5 md:px-6 py-4 sm:py-5 border-t ${themeColors.border}`}>
                 <ul className="space-y-2">
                   {exp.responsibilities.map((resp, idx) => (
                     <li
@@ -228,7 +228,7 @@ const Experience: NextPage = () => {
 
               {/* Expandable Details */}
               {expandedId === exp.id && (
-                <div className={`px-6 py-5 border-t ${metadataBgClass}`}>
+                <div className={`px-4 sm:px-5 md:px-6 py-4 sm:py-5 border-t ${metadataBgClass}`}>
                   <div className="mb-4">
                     <div
                       className={`text-xs uppercase tracking-widest ${themeColors.text.muted} mb-3`}
@@ -260,7 +260,7 @@ const Experience: NextPage = () => {
 
               {/* Action Buttons */}
               <div
-                className={`px-6 py-4 border-t ${themeColors.border} flex gap-3`}
+                className={`px-4 sm:px-5 md:px-6 py-3 sm:py-4 border-t ${themeColors.border} flex flex-col sm:flex-row gap-2 sm:gap-3`}
               >
                 <button
                   onClick={() => toggleExpand(exp.id)}
