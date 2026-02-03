@@ -104,7 +104,7 @@ const Header = () => {
 
         {/* Right Section */}
         <div className="flex items-center gap-3">
-          <div
+          {/* <div
             className={`flex items-center gap-2 px-3 py-1.5 ${
               theme === "dark"
                 ? "bg-gray-800/50 border-green-500/30"
@@ -123,7 +123,7 @@ const Header = () => {
             >
               ONLINE
             </span>
-          </div>
+          </div> */}
 
           {/* Theme Toggle */}
           <button
@@ -135,7 +135,7 @@ const Header = () => {
             }`}
             title={`Switch to ${theme === "dark" ? "original" : "Dark"} theme`}
           >
-            {theme === "dark" ? "🟢 ORIGINAL" : "🌙 DARK"}
+            {theme === "dark" ? " ☀️ LIGHT" : "🌙 DARK"}
           </button>
 
           <button
