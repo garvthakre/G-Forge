@@ -95,14 +95,14 @@ const awardsData: Award[] = [
 
 const Awards: NextPage = () => {
   return (
-    <section className="w-full bg-gray-950 py-20 px-5">
+    <section className="w-full bg-gray-950 py-12 sm:py-16 md:py-20 px-4 sm:px-5">
       <div className="max-w-4xl mx-auto">
         {/* Section Header */}
         <div className="mb-16">
           <div className="text-xs uppercase tracking-widest text-gray-500 mb-3">
             Credentials
           </div>
-          <h2 className="text-4xl font-bold text-white mb-3">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3">
             Awards & Certifications
           </h2>
           <p className="text-gray-400 max-w-2xl">
@@ -127,20 +127,20 @@ const Awards: NextPage = () => {
                 className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden transition-all duration-200 hover:border-gray-700"
               >
                 {/* Header */}
-                <div className="px-6 py-5 border-b border-gray-800">
-                  <div className="flex items-start gap-3 mb-2">
-                    <span className="px-3 py-1 text-xs font-bold uppercase tracking-widest border border-blue-500 text-blue-400 bg-blue-500 bg-opacity-10 rounded flex-shrink-0">
+                <div className="px-4 sm:px-5 md:px-6 py-4 sm:py-5 border-b border-gray-800">
+                  <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-3 mb-2">
+                    <span className="px-3 py-1 text-xs font-bold uppercase tracking-widest border border-blue-500 text-blue-400 bg-blue-500 bg-opacity-10 rounded flex-shrink-0 w-fit">
                       Certification
                     </span>
-                    <h4 className="text-lg font-bold text-white">
+                    <h4 className="text-base sm:text-lg font-bold text-white break-words">
                       {cert.name}
                     </h4>
                   </div>
                 </div>
 
                 {/* Content */}
-                <div className="px-6 py-5">
-                  <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="px-4 sm:px-5 md:px-6 py-4 sm:py-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
                       <div className="text-xs text-gray-500 uppercase tracking-widest mb-1">
                         Issuer
@@ -214,20 +214,20 @@ const Awards: NextPage = () => {
                 className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden transition-all duration-200 hover:border-gray-700"
               >
                 {/* Header */}
-                <div className="px-6 py-5 border-b border-gray-800">
-                  <div className="flex items-start gap-3 mb-2">
-                    <span className="px-3 py-1 text-xs font-bold uppercase tracking-widest border border-green-500 text-green-400 bg-green-500 bg-opacity-10 rounded flex-shrink-0">
+                <div className="px-4 sm:px-5 md:px-6 py-4 sm:py-5 border-b border-gray-800">
+                  <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-3 mb-2">
+                    <span className="px-3 py-1 text-xs font-bold uppercase tracking-widest border border-green-500 text-green-400 bg-green-500 bg-opacity-10 rounded flex-shrink-0 w-fit">
                       Award
                     </span>
-                    <h4 className="text-lg font-bold text-white">
+                    <h4 className="text-base sm:text-lg font-bold text-white break-words">
                       {award.title}
                     </h4>
                   </div>
                 </div>
 
                 {/* Content */}
-                <div className="px-6 py-5">
-                  <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="px-4 sm:px-5 md:px-6 py-4 sm:py-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
                       <div className="text-xs text-gray-500 uppercase tracking-widest mb-1">
                         Organization
