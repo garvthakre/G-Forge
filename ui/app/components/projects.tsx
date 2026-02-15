@@ -325,9 +325,9 @@ const Projects: NextPage = () => {
           >
             Projects
           </div>
-          <h2 className={`text-2xl sm:text-3xl md:text-4xl font-bold ${themeColors.text.primary} mb-3`}>
+          {/* <h2 className={`text-2xl sm:text-3xl md:text-4xl font-bold ${themeColors.text.primary} mb-3`}>
             Selected Backend Projects
-          </h2>
+          </h2> */}
           <p className={`${themeColors.text.secondary} max-w-2xl`}>
             Systems and services I built, focusing on scalability, performance,
             and real-world backend challenges.
