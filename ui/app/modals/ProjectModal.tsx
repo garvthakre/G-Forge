@@ -638,53 +638,8 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                       )}
 
                       {/* Basic Stats */}
-                      <div
-                        className={`p-4 sm:p-5 rounded-lg border ${
-                          theme === "dark"
-                            ? "bg-gray-700 bg-opacity-30 border-gray-600"
-                            : "bg-gray-50 border-gray-300"
-                        }`}
-                      >
-                        <h3
-                          className={`text-xs sm:text-sm font-bold ${themeColors.text.primary} mb-3 uppercase tracking-wide`}
-                        >
-                          Quick Stats
-                        </h3>
-                        <div className="space-y-3 sm:space-y-4">
-                          <div>
-                            <div
-                              className={`text-xl sm:text-2xl font-bold ${
-                                theme === "dark"
-                                  ? "text-cyan-400"
-                                  : "text-green-600"
-                              }`}
-                            >
-                              {project.techStack.length}
-                            </div>
-                            <div
-                              className={`text-xs ${themeColors.text.muted} uppercase`}
-                            >
-                              Technologies
-                            </div>
-                          </div>
-                          <div>
-                            <div
-                              className={`text-xl sm:text-2xl font-bold ${
-                                theme === "dark"
-                                  ? "text-cyan-400"
-                                  : "text-green-600"
-                              }`}
-                            >
-                              {project.features.length}
-                            </div>
-                            <div
-                              className={`text-xs ${themeColors.text.muted} uppercase`}
-                            >
-                              Key Features
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                      
+                      
                     </div>
                   </div>
                 </div>
