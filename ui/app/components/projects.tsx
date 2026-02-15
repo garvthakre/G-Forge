@@ -962,54 +962,551 @@ const projectsData: Project[] = [
     liveUrl: "https://your-domain.com/booleanai",
     githubUrl: "https://github.com/yourusername/booleanai",
   },
-  {
-    id: "queue-management-system",
-    badge: "FULL-STACK",
-    title: "Queueflex - Multi-Service Queue Management Platform",
-    description:
-      "A microservices-based queue management system enabling real-time customer flow management across multiple service providers with role-based access control and distributed authentication.",
-    techStack: [
-      "Next.js",
-      "TypeScript",
-      "Python Flask",
-      "Node.js",
-      "gRPC",
-      "SQLite",
-      "JWT",
-      "Docker",
-    ],
-    features: [
-      "Microservices architecture with gRPC inter-service communication",
-      "JWT-based distributed authentication across 3 services",
-      "Role-based access control (Admin, Provider, Client)",
-      "Real-time queue position tracking with automatic recalculation",
-      "Service capacity management with configurable limits",
-      "Multi-tenant provider dashboard with service isolation",
-      "RESTful APIs with request interceptors and token validation",
-      "Position-aware queuing system with status management",
-    ],
-    architecture: [
-      "Auth Service (Node.js + gRPC): Centralized authentication with JWT verification",
-      "Admin Service (Python Flask): Service CRUD operations and provider management",
-      "Queue Service (Python Flask): Queue operations with service integration",
-      "Frontend (Next.js): Responsive UI with role-based routing",
-    ],
-    highlights: [
-      "Cross-language microservices communication using Protocol Buffers",
-      "Atomic queue operations with automatic position recalculation",
-      "Service-specific capacity enforcement and status filtering",
-      "Secure token propagation across service boundaries",
-    ],
-    metrics: [
-      "3 independent microservices with gRPC integration",
-      "Support for unlimited concurrent service providers",
-      "Real-time queue updates with <100ms latency",
-      "Role-based filtering reducing API response size by 60%",
-    ],
-    image: "/QueueFlex/queueflex-landing.png",
-    github: "https://github.com/yourusername/queueflex",
-    demo: "https://queueflex-demo.vercel.app",
+ {
+  id: "queue-management-system",
+  badge: "FULL-STACK",
+  title: "Queueflex - Multi-Service Queue Management Platform",
+  description:
+    "A microservices-based queue management system enabling real-time customer flow management across multiple service providers with role-based access control and distributed authentication.",
+  
+  techStack: [
+    "Next.js",
+    "TypeScript",
+    "Python Flask",
+    "Node.js",
+    "gRPC",
+    "SQLite",
+    "JWT",
+    "Docker",
+  ],
+  
+  features: [
+    "Microservices architecture with gRPC inter-service communication",
+    "JWT-based distributed authentication across 3 services",
+    "Role-based access control (Admin, Provider, Client)",
+    "Real-time queue position tracking with automatic recalculation",
+    "Service capacity management with configurable limits",
+    "Multi-tenant provider dashboard with service isolation",
+    "RESTful APIs with request interceptors and token validation",
+    "Position-aware queuing system with status management",
+  ],
+
+  highlights: [
+    "Cross-language microservices communication using Protocol Buffers",
+    "Atomic queue operations with automatic position recalculation",
+    "Service-specific capacity enforcement and status filtering",
+    "Secure token propagation across service boundaries",
+    "Zero-downtime service updates with stateless architecture",
+    "Sub-100ms authentication latency via gRPC",
+  ],
+
+  // ARCHITECTURE SECTION
+  architecture: {
+    "System Overview": 
+      "Distributed microservices architecture with 3 independent services communicating via REST APIs and gRPC. Each service maintains its own database and state, ensuring loose coupling and independent scalability.",
+
+    "Auth Service (Node.js + gRPC)": 
+      "Centralized authentication hub running dual servers: (1) REST API on port 3000 for user signup/login with bcrypt password hashing, and (2) gRPC server on port 50051 for token verification across services. Uses JWT with configurable expiration and admin flag embedded in token payload. SQLite database stores user credentials with is_admin boolean field.",
+
+    "Admin Service (Python Flask)": 
+      "Service management layer on port 5000 handling CRUD operations for queue services. Three controller modules: admin_controller (full access), provider_controller (service owners), public_controller (authenticated users). SQLite database with services table tracking service_id, name, description, max_capacity, estimated_time, status, and created_by. Communicates with Auth via gRPC for every request.",
+
+    "Queue Service (Python Flask)": 
+      "Queue operation manager on port 4000 handling add/get/update/delete operations. In-memory queue array with automatic position recalculation on status changes. Fetches service metadata from Admin Service via HTTP. Filters queue visibility based on user role (users see own items, admins see all). Position tracking is service-specific with 1-based indexing.",
+
+    "Frontend (Next.js + TypeScript)": 
+      "Server-side rendered React application with role-based routing. Token stored in HTTP-only cookies and passed via Authorization header. Separate dashboards for Admin (all services + queues), Provider (own services + related queues), and Client (active services + personal queue). Real-time position updates via polling.",
+
+    "Authentication Flow": 
+      "1) User posts credentials to Auth REST API → 2) Auth validates and returns JWT token → 3) Frontend stores token in cookie → 4) Subsequent requests include token in Authorization header → 5) Python services extract token and call Auth gRPC VerifyToken → 6) Auth returns {is_valid, is_admin, user_id} → 7) Service authorizes action based on response.",
+
+    "Service Communication": 
+      "Inter-service calls use HTTP REST for data operations (Queue→Admin for service details) and gRPC for authentication (Admin/Queue→Auth for token verification). CORS configured to allow frontend origin with credentials support. All services check token validity before processing requests.",
+
+    "Data Flow Example": 
+      "Client adds to queue: Frontend→Queue Service (POST /queue/add) → Queue validates token via gRPC → Queue fetches service from Admin via REST → Queue checks capacity → Queue creates item with position = current_count + 1 → Queue recalculates all positions for that service → Returns queue item to client.",
+
+    "Scalability Design": 
+      "Stateless services enable horizontal scaling. Auth Service handles authentication centrally while Queue and Admin services can run multiple instances behind load balancer. SQLite sufficient for MVP but designed for easy migration to PostgreSQL. In-memory queue can be replaced with Redis for persistence and shared state across Queue Service instances.",
+
+    "Error Handling": 
+      "Layered error responses: gRPC failures return FailedResponse object with is_valid=false. HTTP errors include descriptive messages. Token expiration (24h default) triggers 403 Forbidden. Service unavailability (Admin down) returns 500 with error context. Frontend catches errors and displays user-friendly messages.",
   },
+
+  userRoles: [
+    "Admin: Full platform access including creating any service, viewing all queue items across all services, updating any queue status, deleting services and queue items, and accessing aggregate statistics dashboard.",
+    
+    "Provider: Create and manage own services with configurable capacity and timing, view queue items only for services they created, update queue status for their services (waiting → serving → completed), delete own services, and access provider-specific analytics.",
+    
+    "Client: Browse active services with real-time availability, add themselves to service queues with name and purpose, view their own queue positions across all services, track estimated wait time, and cancel their queue entries.",
+  ],
+
+  metrics: [
+    "3 independent microservices with gRPC integration",
+    "Support for unlimited concurrent service providers",
+    "Real-time queue updates with <100ms latency",
+    "Role-based filtering reducing API response size by 60%",
+    "Token verification via gRPC with <50ms roundtrip time",
+    "Atomic position recalculation ensuring data consistency",
+  ],
+
+  // API DOCUMENTATION SECTION
+  apiDocumentation: {
+    baseUrl: "Multiple Services",
+
+    // AUTH SERVICE ENDPOINTS
+    authEndpoints: [
+      {
+        method: "POST",
+        path: "http://localhost:3000/signup",
+        description: "Register new user with optional admin privileges",
+        requestBody: {
+          name: "string",
+          email: "string (unique)",
+          password: "string (will be bcrypt hashed)",
+          is_admin: "boolean (optional, default: false)",
+        },
+        response: {
+          status: 201,
+          body: {
+            user_id: "integer (auto-increment)",
+            message: "User registered successfully",
+            is_admin: "boolean",
+          },
+        },
+        notes: "Password hashed with bcrypt (10 rounds). Email uniqueness enforced by database constraint. Admin flag stored as INTEGER (0/1) in SQLite.",
+      },
+      {
+        method: "POST",
+        path: "http://localhost:3000/login",
+        description: "Authenticate user and receive JWT token",
+        requestBody: {
+          email: "string",
+          password: "string",
+        },
+        response: {
+          status: 200,
+          body: {
+            token: "string (JWT with 24h expiration)",
+            user_id: "integer",
+            admin: "boolean",
+          },
+        },
+        notes: "Token payload contains {user_id, is_admin, exp}. Token must be included in Authorization header for all subsequent requests as 'Bearer <token>'.",
+      },
+      {
+        method: "gRPC",
+        path: "localhost:50051/VerifyToken",
+        description: "Internal gRPC endpoint for token verification (not directly accessible to clients)",
+        requestBody: {
+          token: "string",
+        },
+        response: {
+          status: 200,
+          body: {
+            is_valid: "boolean",
+            is_admin: "boolean",
+            user_id: "integer",
+          },
+        },
+        notes: "Called by Admin and Queue services for every authenticated request. Returns is_valid=false on expired or malformed tokens.",
+      },
+    ],
+
+    // ADMIN SERVICE - ADMIN ENDPOINTS
+    adminEndpoints: [
+      {
+        method: "POST",
+        path: "http://localhost:5000/admin/services",
+        description: "Create new service (admin only)",
+        middleware: "verify_admin (checks token via gRPC + is_admin=true)",
+        requestBody: {
+          name: "string (required)",
+          description: "string (optional)",
+          category: "string (default: 'General')",
+          max_capacity: "integer (default: 50)",
+          estimated_time_per_person: "integer (minutes, default: 15)",
+        },
+        response: {
+          status: 201,
+          body: {
+            service_id: "UUID",
+            name: "string",
+            description: "string",
+            category: "string",
+            max_capacity: "integer",
+            estimated_time_per_person: "integer",
+            status: "string (always 'active' on creation)",
+            created_by: "integer (user_id from token)",
+            created_at: "timestamp",
+          },
+        },
+        notes: "Service ID is UUID v4. Created_by links to user who created service. Status defaults to 'active'.",
+      },
+      {
+        method: "GET",
+        path: "http://localhost:5000/admin/services",
+        description: "Get all services (admin only)",
+        middleware: "verify_admin",
+        response: {
+          status: 200,
+          body: "Array of all service objects ordered by created_at DESC",
+        },
+        notes: "Returns services regardless of status (active/inactive). Used for admin dashboard.",
+      },
+      {
+        method: "PUT",
+        path: "http://localhost:5000/admin/services/:service_id",
+        description: "Update any service (admin only)",
+        middleware: "verify_admin",
+        requestBody: {
+          name: "string (optional)",
+          description: "string (optional)",
+          category: "string (optional)",
+          max_capacity: "integer (optional)",
+          estimated_time_per_person: "integer (optional)",
+          status: "string (optional: 'active' | 'inactive')",
+        },
+        response: {
+          status: 200,
+          body: "Updated service object",
+        },
+        authorization: "Admin can update any service regardless of created_by",
+      },
+      {
+        method: "DELETE",
+        path: "http://localhost:5000/admin/services/:service_id",
+        description: "Delete any service (admin only)",
+        middleware: "verify_admin",
+        response: {
+          status: 200,
+          body: { message: "Service deleted successfully" },
+        },
+        notes: "Cascading delete recommended: should also remove related queue items (currently not implemented, Queue Service will error on missing service).",
+      },
+      {
+        method: "GET",
+        path: "http://localhost:5000/admin/queue/all",
+        description: "Get all queue items across all services (admin only)",
+        middleware: "verify_admin",
+        response: {
+          status: 200,
+          body: "Array of all queue items (proxied from Queue Service)",
+        },
+        notes: "Makes HTTP request to Queue Service GET /queue/get with admin token. Returns aggregated view of all queues.",
+      },
+      {
+        method: "GET",
+        path: "http://localhost:5000/admin/queue/stats",
+        description: "Get queue statistics (admin only)",
+        middleware: "verify_admin",
+        response: {
+          status: 200,
+          body: {
+            total_items: "integer",
+            waiting: "integer (status='waiting')",
+            by_service_type: "object {service_type: count}",
+            by_user: "object {user_id: count}",
+          },
+        },
+        notes: "Aggregates data from Queue Service. Useful for admin analytics dashboard.",
+      },
+    ],
+
+    // ADMIN SERVICE - PROVIDER ENDPOINTS
+    providerEndpoints: [
+      {
+        method: "GET",
+        path: "http://localhost:5000/provider/services",
+        description: "Get services created by logged-in provider",
+        middleware: "verify_user (authenticated but not necessarily admin)",
+        response: {
+          status: 200,
+          body: "Array of services where created_by = user_id from token",
+        },
+        notes: "Filters all services by created_by field. Providers can only see their own services.",
+      },
+      {
+        method: "POST",
+        path: "http://localhost:5000/provider/services",
+        description: "Create service as provider",
+        middleware: "verify_user",
+        requestBody: "Same as admin service creation",
+        response: {
+          status: 201,
+          body: "Created service with created_by = user_id",
+        },
+        notes: "Non-admin users can create services. Created_by automatically set from token.",
+      },
+      {
+        method: "PUT",
+        path: "http://localhost:5000/provider/services/:service_id",
+        description: "Update own service",
+        middleware: "verify_user",
+        authorization: "Only if service.created_by == user_id from token",
+        requestBody: "Same fields as admin update",
+        response: {
+          status: 200,
+          body: "Updated service object",
+        },
+        notes: "Returns 403 if user tries to update service they don't own.",
+      },
+      {
+        method: "DELETE",
+        path: "http://localhost:5000/provider/services/:service_id",
+        description: "Delete own service",
+        middleware: "verify_user",
+        authorization: "Only if service.created_by == user_id",
+        response: {
+          status: 200,
+          body: { message: "Service deleted successfully" },
+        },
+      },
+      {
+        method: "GET",
+        path: "http://localhost:5000/provider/queue/all",
+        description: "Get queue items for provider's services",
+        middleware: "verify_user",
+        response: {
+          status: 200,
+          body: "Array of queue items filtered by provider's service IDs",
+        },
+        logic: "Fetches all queue items from Queue Service, gets provider's service IDs from Admin DB, filters queue items where service_id matches.",
+      },
+      {
+        method: "PUT",
+        path: "http://localhost:5000/provider/queue/:queue_id",
+        description: "Update queue item status for own services",
+        middleware: "verify_user",
+        authorization: "Queue item must belong to service owned by provider",
+        requestBody: {
+          status: "string (waiting | serving | completed)",
+        },
+        response: {
+          status: 200,
+          body: "Updated queue item (proxied from Queue Service)",
+        },
+        notes: "Fetches queue item, verifies service ownership, forwards update to Queue Service.",
+      },
+    ],
+
+    // ADMIN SERVICE - PUBLIC ENDPOINTS
+    publicEndpoints: [
+      {
+        method: "GET",
+        path: "http://localhost:5000/services",
+        description: "Get active services (authenticated users)",
+        middleware: "verify_token (not verify_admin)",
+        response: {
+          status: 200,
+          body: "Array of services where status='active'",
+        },
+        notes: "Public endpoint for clients to browse available services. Requires authentication but not admin privileges.",
+      },
+      {
+        method: "GET",
+        path: "http://localhost:5000/services/:service_id",
+        description: "Get specific service details",
+        middleware: "verify_token",
+        response: {
+          status: 200,
+          body: "Service object (only if status='active' for non-admins)",
+        },
+        notes: "Admins can fetch any service. Regular users only see active services.",
+      },
+    ],
+
+    // QUEUE SERVICE ENDPOINTS
+    queueEndpoints: [
+      {
+        method: "GET",
+        path: "http://localhost:4000/services",
+        description: "Get available services with queue counts",
+        middleware: "authenticate_request (via gRPC)",
+        response: {
+  status: 200,
+  body: [
+    {
+      service_id: "UUID",
+      name: "string",
+      description: "string",
+      category: "string",
+      max_capacity: "integer",
+      estimated_time_per_person: "integer",
+      status: "string",
+      created_by: "integer",
+      created_at: "timestamp",
+      current_queue_count: "integer (waiting items only)",
+    },
+  ],
+},
+        notes: "Fetches services from Admin Service, adds queue count for each. Only returns active services.",
+      },
+      {
+        method: "GET",
+        path: "http://localhost:4000/services/:service_id",
+        description: "Get specific service with queue count",
+        middleware: "authenticate_request",
+        response: {
+  status: 200,
+  body: [
+    {
+      service_id: "UUID",
+      name: "string",
+      description: "string",
+      category: "string",
+      max_capacity: "integer",
+      estimated_time_per_person: "integer",
+      status: "string",
+      created_by: "integer",
+      created_at: "timestamp",
+      current_queue_count: "integer (waiting items only)",
+    },
+  ],
+},
+      },
+      {
+        method: "POST",
+        path: "http://localhost:4000/queue/add",
+        description: "Add client to queue for a service",
+        middleware: "authenticate_request",
+        requestBody: {
+          service_id: "UUID (required)",
+          name: "string (required)",
+          purpose: "string (optional)",
+        },
+        response: {
+          status: 201,
+          body: {
+            queue_id: "UUID",
+            user_id: "integer (from token)",
+            service_id: "UUID",
+            name: "string",
+            purpose: "string",
+            serviceType: "string (from service.name or category)",
+            position: "integer (1-based, service-specific)",
+            status: "string (always 'waiting')",
+          },
+        },
+        validation:
+          "1) Service must exist (HTTP call to Admin), 2) Service must be active, 3) Queue count < max_capacity, 4) Token must be valid",
+        notes: "Position calculated as current_waiting_count + 1. Triggers recalculate_positions() for service after insertion.",
+      },
+      {
+        method: "GET",
+        path: "http://localhost:4000/queue/get",
+        description: "Get queue items (role-dependent filtering)",
+        middleware: "authenticate_request",
+        response: {
+          status: 200,
+          body: "Array of queue items (all if admin, user's items if not)",
+        },
+        notes: "Admins see all queue items. Regular users see only items where user_id matches token.",
+      },
+      {
+        method: "GET",
+        path: "http://localhost:4000/queue/service/:service_id",
+        description: "Get queue for specific service",
+        middleware: "authenticate_request",
+        response: {
+          status: 200,
+          body: "Array of queue items for service (waiting only for non-admins)",
+        },
+        notes: "Filters by service_id. Admins see all statuses, users see only waiting items.",
+      },
+      {
+        method: "GET",
+        path: "http://localhost:4000/queue/get/:queue_id",
+        description: "Get specific queue item by ID",
+        middleware: "authenticate_request",
+        authorization: "Admin or item.user_id == user_id from token",
+        response: {
+          status: 200,
+          body: "Queue item object",
+        },
+      },
+      {
+        method: "PUT",
+        path: "http://localhost:4000/queue/update/:queue_id",
+        description: "Update queue item",
+        middleware: "authenticate_request",
+        authorization: "Admin or owner",
+        requestBody: {
+          name: "string (optional)",
+          purpose: "string (optional)",
+          serviceType: "string (optional)",
+          status: "string (admin only)",
+        },
+        response: {
+          status: 200,
+          body: "Updated queue item",
+        },
+        notes: "Only admins can change status. Status change triggers position recalculation.",
+      },
+      {
+        method: "DELETE",
+        path: "http://localhost:4000/queue/delete/:queue_id",
+        description: "Remove item from queue",
+        middleware: "authenticate_request",
+        authorization: "Admin or owner",
+        response: {
+          status: 200,
+          body: { message: "Queue item deleted successfully" },
+        },
+        notes: "Triggers recalculate_positions() for the service after deletion.",
+      },
+    ],
+
+    // INTERNAL OPERATIONS
+    internalOperations: [
+      {
+        method: "FUNCTION",
+        path: "recalculate_positions(service_id)",
+        description: "Recalculate queue positions for a service",
+        handler:
+          "1) Filter queue for service_id and status='waiting', 2) Sort by insertion order (queue array index), 3) Assign position = index + 1 to each item",
+        notes: "Called after add/delete/status_change. Ensures position integrity within each service.",
+      },
+      {
+        method: "FUNCTION",
+        path: "verify_token(token) via gRPC",
+        description: "Admin/Queue services call Auth Service gRPC",
+        handler:
+          "1) Extract token from Authorization header (Bearer <token>), 2) Create gRPC request with token, 3) Call Auth VerifyToken endpoint, 4) Return {is_valid, is_admin, user_id}",
+        notes: "Timeout set to 10 seconds. On failure returns FailedResponse with is_valid=false.",
+      },
+    ],
+  },
+
+  // OTHER PROJECT METADATA
+  image: "/QueueFlex/queueflex-landing.png",
+  
+  awards: undefined, // No awards mentioned for this project
+  
+  github: "https://github.com/yourusername/queueflex", // Update with actual repo URL
+  
+  demo: undefined, // Add if you have a live demo
+  
+  // Optional: Add gallery images
+  gallery: [
+    {
+      url: "/QueueFlex/admin-dashboard.png",
+      caption: "Admin Dashboard - Manage all services and view queue statistics",
+    },
+    {
+      url: "/QueueFlex/provider-dashboard.png",
+      caption: "Provider Dashboard - Service creation and queue management",
+    },
+    {
+      url: "/QueueFlex/client-queue.png",
+      caption: "Client View - Browse services and join queues",
+    },
+    {
+      url: "/QueueFlex/architecture-diagram.png",
+      caption: "Microservices Architecture - gRPC and REST communication flow",
+    },
+  ],
+},
   {
     id: "tribal-land-registry",
     badge: "BLOCKCHAIN",
