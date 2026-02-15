@@ -3,34 +3,9 @@ import { NextPage } from "next";
 import { useState } from "react";
 import { useTheme } from "@/app/context/ThemeContext";
 import { THEMES } from "@/app/utils/themes";
-
-interface Project {
-  id: string;
-  badge:
-    | "SERVICE"
-    | "API"
-    | "SYSTEM"
-    | "FULL-STACK PLATFORM"
-    | "FULL-STACK AI"
-    | "FULL-STACK"
-    | "BLOCKCHAIN";
-  title: string;
-  description: string;
-  techStack: string[];
-  features: string[];
-  image: string;
-  highlights?: string[];
-  architecture?: { [key: string]: string } | string[];
-  userRoles?: string[];
-  demoVideo?: string;
-  liveUrl?: string;
-  githubUrl?: string;
-  awards?: string;
-  links?: { [key: string]: string };
-  metrics?: string[];
-  github?: string;
-  demo?: string;
-}
+import ProjectModal from "../modals/ProjectModal";
+import { Project } from "@/app/utils/projectTypes";
+import { getBadgeIcon, getAbbreviatedBadge } from "../modals/BadgeIcons";
 
 const projectsData: Project[] = [
   {
@@ -110,8 +85,13 @@ const projectsData: Project[] = [
       "Admin: Monitor all activities, verify payments, manage platform",
     ],
     image: "/Campusx/cx-opp-ui.png",
-    liveUrl: "https://becampusx.com", // Add your actual URL
-    githubUrl: "https://github.com/yourusername/becampusx", // Add your repo URL
+    liveUrl: "https://becampusx.com",
+    githubUrl: "https://github.com/yourusername/becampusx",
+    gallery: [
+      { url: "/Campusx/cx-opp-ui.png", caption: "Opportunities Dashboard" },
+      { url: "/Campusx/cx-feed.png", caption: "Anonymous Social Feed" },
+      { url: "/Campusx/cx-chat.png", caption: "Real-time Chat Interface" },
+    ],
   },
 
   {
@@ -259,10 +239,16 @@ const projectsData: Project[] = [
 const Projects: NextPage = () => {
   const { theme } = useTheme();
   const themeColors = THEMES[theme] ?? THEMES.dark;
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [selectedProjectIndex, setSelectedProjectIndex] = useState<number | null>(null);
 
-  const toggleExpand = (id: string) => {
-    setExpandedId(expandedId === id ? null : id);
+  const handleNavigate = (direction: "prev" | "next") => {
+    if (selectedProjectIndex === null) return;
+
+    if (direction === "prev" && selectedProjectIndex > 0) {
+      setSelectedProjectIndex(selectedProjectIndex - 1);
+    } else if (direction === "next" && selectedProjectIndex < projectsData.length - 1) {
+      setSelectedProjectIndex(selectedProjectIndex + 1);
+    }
   };
 
   const getBadgeColor = (badge: string) => {
@@ -316,89 +302,83 @@ const Projects: NextPage = () => {
     theme === "dark" ? "hover:border-gray-700" : "hover:border-green-400";
 
   return (
-    <section className={`w-full ${bgClass} py-12 sm:py-16 md:py-20 px-4 sm:px-5`}>
-      <div className="max-w-5xl mx-auto">
-        {/* Section Header */}
-        <div className="mb-12">
-          <div
-            className={`text-xs uppercase tracking-widest ${themeColors.text.muted} mb-3`}
-          >
-            Projects
-          </div>
-          {/* <h2 className={`text-2xl sm:text-3xl md:text-4xl font-bold ${themeColors.text.primary} mb-3`}>
-            Selected Backend Projects
-          </h2> */}
-          <p className={`${themeColors.text.secondary} max-w-2xl`}>
-            Systems and services I built, focusing on scalability, performance,
-            and real-world backend challenges.
-          </p>
-        </div>
-
-        {/* Projects Stack */}
-        <div className="space-y-6">
-          {projectsData.map((project) => (
+    <>
+      <section className={`w-full ${bgClass} py-12 sm:py-16 md:py-20 px-4 sm:px-5`}>
+        <div className="max-w-5xl mx-auto">
+          {/* Section Header */}
+          <div className="mb-12">
             <div
-              key={project.id}
-              className={`${panelBgClass} border rounded-lg overflow-hidden transition-all duration-200 ${panelHoverClass} relative`}
+              className={`text-xs uppercase tracking-widest ${themeColors.text.muted} mb-3`}
             >
-              {/* Winner Cup Badge - Top Right Corner */}
-              {project.awards && (
-                <div className="absolute top-4 right-4 z-10">
-                  <div
-                    className={`text-3xl drop-shadow-lg ${
-                      theme === "dark"
-                        ? "bg-yellow-500 bg-opacity-10 border border-yellow-500 border-opacity-30"
-                        : "bg-yellow-100 border border-yellow-300"
-                    } rounded-full w-12 h-12 flex items-center justify-center hover:scale-110 transition-transform`}
-                  >
-                    🏆
-                  </div>
-                </div>
-              )}
-              {/* Project Header with Badge */}
-              <div className={`px-4 sm:px-5 md:px-6 pt-4 sm:pt-5 md:pt-6 pb-3 sm:pb-4 border-b ${themeColors.border}`}>
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
-                  <span
-                    className={`px-3 py-1 text-xs font-bold uppercase tracking-widest border rounded ${getBadgeColor(
-                      project.badge,
-                    )} w-fit`}
-                  >
-                    {project.badge}
-                  </span>
-                  <h3
-                    className={`text-lg sm:text-xl font-bold ${themeColors.text.primary} break-words`}
-                  >
-                    {project.title}
-                  </h3>
-                </div>
-              </div>
+              Projects
+            </div>
+            <h2 className={`text-2xl sm:text-3xl md:text-4xl font-bold ${themeColors.text.primary} mb-3`}>
+              Selected Backend Projects
+            </h2>
+            <p className={`${themeColors.text.secondary} max-w-2xl`}>
+              Systems and services I built, focusing on scalability, performance,
+              and real-world backend challenges.
+            </p>
+          </div>
 
-              {/* Split Layout: Image + Info */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 p-4 sm:p-5 md:p-6">
-                {/* Left: Image Panel (30-35%) - Hidden on mobile */}
-                <div
-                  className={`hidden lg:block col-span-1 ${panelBgClass} rounded border overflow-hidden h-64`}
-                >
-                  <div
-                    className={`w-full h-full ${
-                      theme === "dark"
-                        ? "bg-gradient-to-br from-gray-800 to-gray-900"
-                        : "bg-gradient-to-br from-gray-100 to-white"
-                    } flex items-center justify-center`}
-                  >
+          {/* Projects Stack */}
+          <div className="space-y-6">
+            {projectsData.map((project, index) => (
+              <div
+                key={project.id}
+                className={`${panelBgClass} border rounded-lg overflow-hidden transition-all duration-200 ${panelHoverClass} relative`}
+              >
+                {/* Winner Cup Badge - Top Right Corner */}
+                {project.awards && (
+                  <div className="absolute top-4 right-4 z-10">
                     <div
-                      className={`text-center ${
-                        theme === "dark" ? "text-gray-500" : "text-gray-400"
-                      }`}
+                      className={`text-3xl drop-shadow-lg ${
+                        theme === "dark"
+                          ? "bg-yellow-500 bg-opacity-10 border border-yellow-500 border-opacity-30"
+                          : "bg-yellow-100 border border-yellow-300"
+                      } rounded-full w-12 h-12 flex items-center justify-center hover:scale-110 transition-transform`}
                     >
-                      <div className="text-4xl mb-2">📊</div>
-                      <div className="text-xs">Architecture Diagram</div>
+                      🏆
                     </div>
                   </div>
+                )}
+                {/* Project Header with Badge */}
+                <div className={`px-4 sm:px-5 md:px-6 pt-4 sm:pt-5 md:pt-6 pb-3 sm:pb-4 border-b ${themeColors.border}`}>
+                  <div className="flex items-center gap-2 sm:gap-3 mb-2">
+                    {/* Badge - Responsive: Icon only on mobile, Icon + Text on desktop */}
+                    <div 
+                      className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-1 text-xs font-bold uppercase tracking-widest border rounded ${getBadgeColor(
+                        project.badge,
+                      )} flex-shrink-0 group relative`}
+                      title={project.badge} // Tooltip for mobile
+                    >
+                      {/* Icon */}
+                      {(() => {
+                        const IconComponent = getBadgeIcon(project.badge);
+                        return <IconComponent size={16} className="flex-shrink-0" />;
+                      })()}
+                      
+                      {/* Text - Hidden on mobile, shown on sm+ screens */}
+                      <span className="hidden sm:inline whitespace-nowrap">
+                        {getAbbreviatedBadge(project.badge)}
+                      </span>
+                      
+                      {/* Mobile Tooltip - Shows full badge name on tap/hover */}
+                      <span className="sm:hidden absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-[10px] rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                        {project.badge}
+                      </span>
+                    </div>
+                    
+                    <h3
+                      className={`text-base sm:text-lg md:text-xl font-bold ${themeColors.text.primary} break-words flex-1 min-w-0`}
+                    >
+                      {project.title}
+                    </h3>
+                  </div>
                 </div>
 
-                {/* Right: Project Info Panel (65-70%) */}
-                <div className="col-span-1 lg:col-span-2 flex flex-col justify-between">
+                {/* Project Content */}
+                <div className="p-4 sm:p-5 md:p-6">
                   {/* Description */}
                   <div className="mb-4">
                     <p
@@ -419,7 +399,7 @@ const Projects: NextPage = () => {
                   {/* Features */}
                   <div className="mb-6">
                     <ul className="space-y-1">
-                      {project.features.map((feature, idx) => (
+                      {project.features.slice(0, 4).map((feature, idx) => (
                         <li
                           key={idx}
                           className={`text-sm ${themeColors.text.secondary} flex items-start`}
@@ -444,6 +424,7 @@ const Projects: NextPage = () => {
                     className={`flex flex-col sm:flex-row gap-2 sm:gap-3 pt-4 border-t ${themeColors.border}`}
                   >
                     <button
+                      onClick={() => setSelectedProjectIndex(index)}
                       className={`px-4 py-2 transition font-medium text-xs rounded ${
                         theme === "dark"
                           ? "border border-blue-500 text-blue-400 hover:bg-blue-500 hover:text-gray-900"
@@ -453,88 +434,51 @@ const Projects: NextPage = () => {
                       View Details
                     </button>
                     <button
+                      onClick={() => {
+                        setSelectedProjectIndex(index);
+                      }}
                       className={`px-4 py-2 transition font-medium text-xs rounded ${
                         theme === "dark"
                           ? "border border-green-500 text-green-400 hover:bg-green-500 hover:text-gray-900"
                           : "border border-green-600 text-green-700 hover:bg-green-600 hover:text-white"
                       }`}
                     >
-                      API Docs
+                      Architecture
                     </button>
-                    <button
-                      onClick={() => toggleExpand(project.id)}
-                      className={`px-4 py-2 transition font-medium text-xs rounded ${
-                        theme === "dark"
-                          ? "border border-gray-600 text-gray-300 hover:bg-gray-700"
-                          : "border border-gray-400 text-gray-600 hover:bg-gray-200"
-                      }`}
-                    >
-                      {expandedId === project.id ? "Collapse" : "Architecture"}
-                    </button>
+                    {project.liveUrl && (
+                      <a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`px-4 py-2 transition font-medium text-xs rounded text-center ${
+                          theme === "dark"
+                            ? "border border-gray-600 text-gray-300 hover:bg-gray-700"
+                            : "border border-gray-400 text-gray-600 hover:bg-gray-200"
+                        }`}
+                      >
+                        Live Demo
+                      </a>
+                    )}
                   </div>
                 </div>
               </div>
-
-              {/* Expandable Details */}
-              {expandedId === project.id && (
-                <div
-                  className={`px-4 sm:px-5 md:px-6 py-4 sm:py-5 md:py-6 border-t ${themeColors.border} ${
-                    theme === "dark"
-                      ? "bg-gray-800 bg-opacity-30"
-                      : "bg-green-50 bg-opacity-50"
-                  }`}
-                >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-                    {/* Left: Endpoints */}
-                    <div>
-                      <div className="text-xs uppercase tracking-widest text-gray-500 mb-4">
-                        Key Endpoints
-                      </div>
-                      <div className="space-y-2 font-mono text-xs text-gray-400">
-                        <div>
-                          <span className="text-green-400">GET</span> /status
-                        </div>
-                        <div>
-                          <span className="text-blue-400">POST</span> /task
-                        </div>
-                        <div>
-                          <span className="text-purple-400">PATCH</span>{" "}
-                          /task/:id
-                        </div>
-                        <div>
-                          <span className="text-red-400">DELETE</span> /task/:id
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Right: Architecture Notes */}
-                    <div>
-                      <div className="text-xs uppercase tracking-widest text-gray-500 mb-4">
-                        Architecture Highlights
-                      </div>
-                      <ul className="space-y-2">
-                        <li className="text-sm text-gray-300 flex items-start">
-                          <span className="text-blue-400 mr-2">→</span>
-                          <span>Horizontally scalable microservice</span>
-                        </li>
-                        <li className="text-sm text-gray-300 flex items-start">
-                          <span className="text-blue-400 mr-2">→</span>
-                          <span>Event-driven with message queue</span>
-                        </li>
-                        <li className="text-sm text-gray-300 flex items-start">
-                          <span className="text-blue-400 mr-2">→</span>
-                          <span>99.9% uptime in production</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* Project Modal */}
+      {selectedProjectIndex !== null && (
+        <ProjectModal
+          project={projectsData[selectedProjectIndex]}
+          isOpen={selectedProjectIndex !== null}
+          onClose={() => setSelectedProjectIndex(null)}
+          onNavigate={handleNavigate}
+          hasPrevious={selectedProjectIndex > 0}
+          hasNext={selectedProjectIndex < projectsData.length - 1}
+        />
+      )}
+    </>
   );
 };
 
