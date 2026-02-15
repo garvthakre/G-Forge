@@ -138,20 +138,7 @@ const Header = () => {
             {theme === "dark" ? " ☀️ LIGHT" : "🌙 DARK"}
           </button>
 
-          <button
-            className={`relative group px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-300 ${
-              theme === "dark"
-                ? "border border-blue-500/50 text-blue-300 hover:border-blue-400 hover:bg-blue-500/10 hover:shadow-lg hover:shadow-blue-500/20"
-                : "border border-green-600 text-green-700 hover:bg-green-600 hover:text-white"
-            }`}
-          >
-            <div
-              className={`absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
-                theme === "dark" ? "bg-blue-500/10" : "bg-green-600/20"
-              }`}
-            ></div>
-            <span className="relative">AUTH</span>
-          </button>
+ 
         </div>
       </div>
 
