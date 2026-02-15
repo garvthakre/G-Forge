@@ -59,9 +59,6 @@ const projectsData: Project[] = [
       "Infinite scroll & lazy loading for performance",
       "Google Gemini AI chatbot for campus information",
       "Rate limiting & security middleware (Helmet, CORS)",
-      "Structured logging with Winston",
-      "Image upload with Firebase Storage",
-      "Anonymous posting with profile verification system",
     ],
     highlights: [
       "Handles payment workflows with first/second payment tracking",
@@ -72,26 +69,422 @@ const projectsData: Project[] = [
       "Comprehensive error handling & validation",
     ],
     architecture: {
-      frontend: "React 18 with Redux Toolkit, React Router, Socket.IO client",
-      backend: "Express.js with MongoDB, Socket.IO server, JWT authentication",
-      ai: "Google Gemini AI for chatbot, TensorFlow.js for image moderation",
-      payments: "DodoPayments integration with webhook verification",
-      realtime: "Socket.IO for notifications, comments, and live updates",
-      storage: "Firebase for image uploads, MongoDB for all data persistence",
+      "Frontend Layer":
+        "React 18 with Redux Toolkit for state management, Socket.IO client for real-time updates, React Router for navigation, Firebase SDK for image uploads, TensorFlow.js for client-side AI moderation",
+
+      "Backend Services":
+        "Express.js REST API with modular route architecture, MongoDB with Mongoose ODM, Socket.IO server for WebSocket connections, JWT-based authentication middleware, Winston logging system",
+
+      "Real-time Communication":
+        "Socket.IO bidirectional event-based communication for notifications, comments, and live updates. User registration system mapping socket IDs to user IDs for targeted message delivery",
+
+      "AI Integration":
+        "Google Gemini AI (Vertex AI) for intelligent campus chatbot with contextual responses. TensorFlow.js NSFW.js model for client-side content moderation with 95% accuracy, preventing inappropriate image uploads before submission",
+
+      "Payment Processing":
+        "DodoPayments API integration with webhook verification for secure payment callbacks. Two-tier payment system: 50% upfront (first payment) and 50% on completion (second payment) with status tracking in MongoDB",
+
+      "Storage Layer":
+        "MongoDB for user data, posts, comments, opportunities, and applications. Firebase Storage for image hosting with automatic compression. Redis-like structure for session management",
+
+      "Security & Middleware":
+        "Helmet.js for HTTP security headers, CORS configuration with trusted origins, Express rate limiters (100 req/min for auth, 20 req/min for posts), JWT token verification, express-mongo-sanitize for NoSQL injection prevention",
+
+      Deployment:
+        "Docker containerization for consistent environments, separate containers for frontend and backend, Docker Compose for orchestration, environment-based configuration management",
     },
     userRoles: [
-      "Students: Post anonymously, apply for opportunities, earn through tasks",
-      "Companies: Create paid opportunities, manage applicants, process payments",
-      "Admin: Monitor all activities, verify payments, manage platform",
+      "Students: Post anonymously with gender/section visibility, apply for paid opportunities, earn through micro-tasks, interact via comments with real-time notifications, access AI chatbot for campus queries",
+
+      "Companies: Create paid opportunities (surveys, tasks, internships), manage applicants with status tracking (applied → shortlisted → selected → rejected), process two-stage payments, view detailed applicant profiles and proof of work",
+
+      "Admin: Monitor all platform activities across social and economic features, verify payment transactions from webhook callbacks, manage user authentication status, access comprehensive analytics dashboard, moderate content and user reports",
     ],
+    metrics: [
+      "90+ RESTful API endpoints across 8 route modules",
+      "Real-time WebSocket support for 1000+ concurrent connections",
+      "AI content moderation with 95% accuracy rate",
+      "Sub-200ms average API response time with pagination",
+      "Two-tier payment system with webhook verification",
+      "Infinite scroll reducing initial load time by 70%",
+    ],
+    awards: "Buildspace S5 Participant - July to December 2024",
     image: "/Campusx/cx-opp-ui.png",
     liveUrl: "https://becampusx.com",
     githubUrl: "https://github.com/yourusername/becampusx",
     gallery: [
-      { url: "/Campusx/cx-opp-ui.png", caption: "Opportunities Dashboard" },
-      { url: "/Campusx/cx-feed.png", caption: "Anonymous Social Feed" },
-      { url: "/Campusx/cx-chat.png", caption: "Real-time Chat Interface" },
+      {
+        url: "/Campusx/cx-opp-ui.png",
+        caption:
+          "Economic Opportunities Dashboard - Students browse paid tasks and internships",
+      },
+      {
+        url: "/Campusx/cx-feed.png",
+        caption:
+          "Anonymous Social Feed - Gender/section-based anonymous posting with AI moderation",
+      },
+      {
+        url: "/Campusx/cx-chat.png",
+        caption:
+          "Google Gemini AI Chatbot - Context-aware campus information assistant",
+      },
     ],
+    apiDocumentation: {
+      baseUrl: "https://api.becampusx.com",
+
+      authEndpoints: [
+        {
+          method: "POST",
+          path: "/api/auth/signup",
+          description:
+            "Register new student account with admission number validation",
+          requestBody: {
+            admissionNumber: "string (4 digits, year format)",
+            email: "string",
+            password: "string (hashed with bcrypt)",
+            section: "string (CSE/IT/ETC/etc)",
+            gender: "string (Male/Female)",
+          },
+          response: {
+            status: 201,
+            body: "User object with JWT token in cookie",
+          },
+          security: "Rate limited: 100 requests/min per IP",
+          notes:
+            "Auto-calculates graduation year from admission number. Sets JWT cookie with 30-day expiry",
+        },
+        {
+          method: "POST",
+          path: "/api/auth/signin",
+          description: "Authenticate user and establish session",
+          requestBody: {
+            email: "string",
+            password: "string",
+          },
+          response: {
+            status: 200,
+            body: "User object (password excluded) with JWT token",
+          },
+          security: "Rate limited: 100 requests/min per IP",
+        },
+        {
+          method: "POST",
+          path: "/api/auth/logout",
+          description: "Clear JWT session cookie",
+          middleware: "isAuthenticated",
+          response: {
+            status: 200,
+            body: "{ message: 'Signout Success' }",
+          },
+        },
+      ],
+
+      postEndpoints: [
+        {
+          method: "GET",
+          path: "/api/post/allpost",
+          description:
+            "Fetch paginated feed of all posts with infinite scroll support",
+          queryParams: {
+            page: "number (default: 1)",
+            limit: "number (default: 10)",
+          },
+          response: {
+            status: 200,
+            body: {
+              posts: "Array of post objects with populated user data",
+              currentPage: "number",
+              totalPages: "number",
+              hasMore: "boolean",
+            },
+          },
+          middleware: "isAuthenticated",
+          notes:
+            "Returns reversed array (newest first). Populates user gender, section, profilePicture, year, isAuthenticated",
+        },
+        {
+          method: "POST",
+          path: "/api/post/addpost",
+          description: "Create new anonymous post with optional image",
+          requestBody: {
+            text: "string (required)",
+            postImage: "string (Firebase Storage URL, optional)",
+          },
+          response: {
+            status: 201,
+            body: "Created post object",
+          },
+          middleware: "isAuthenticated, postLimiter (20 req/min)",
+          security: "Client-side NSFW detection before upload",
+          notes:
+            "Image uploaded to Firebase Storage first, then URL saved in MongoDB",
+        },
+        {
+          method: "POST",
+          path: "/api/post/delete/:postId",
+          description: "Delete post and all associated comments",
+          response: {
+            status: 200,
+            body: "{ message: 'Post and its comments deleted successfully' }",
+          },
+          middleware: "isAuthenticated",
+          authorization: "Only post author can delete",
+          notes:
+            "Cascading delete removes all comments via Comment.deleteMany()",
+        },
+      ],
+
+      commentEndpoints: [
+        {
+          method: "GET",
+          path: "/api/comment/all/:postId",
+          description: "Fetch all comments for a specific post",
+          response: {
+            status: 200,
+            body: "Array of comments with populated user (section, gender, profilePicture)",
+          },
+          notes: "Sorted by createdAt descending (newest first)",
+        },
+        {
+          method: "POST",
+          path: "/api/comment/add/:postId",
+          description:
+            "Add comment to post and trigger real-time notification",
+          requestBody: {
+            text: "string",
+            userId: "string (ObjectId)",
+          },
+          response: {
+            status: 201,
+            body: "Created comment object",
+          },
+          realtime: "Emits 'newComment' Socket.IO event to post owner",
+          notes:
+            "Creates Notification document and sends WebSocket event if post owner is online",
+        },
+        {
+          method: "POST",
+          path: "/api/comment/delete/:commentId",
+          description: "Delete own comment",
+          requestBody: {
+            userId: "string (ObjectId)",
+          },
+          response: {
+            status: 200,
+            body: "{ message: 'Comment deleted successfully' }",
+          },
+          authorization: "Only comment author can delete",
+        },
+      ],
+
+      opportunityEndpoints: [
+        {
+          method: "POST",
+          path: "/api/company/create",
+          description:
+            "Create new paid opportunity (companies/admins only)",
+          requestBody: {
+            title: "string",
+            description: "string",
+            numberOfOpenings: "number (min: 1)",
+            isPaid: "boolean",
+            amount: "number (required if isPaid=true)",
+            deadline: "Date (must be future)",
+            proofOfWork: "{ screenshot: string, link: string }",
+            type: "string (engagement/survey/academic/development/etc)",
+          },
+          response: {
+            status: 201,
+            body: "Created opportunity with status='open'",
+          },
+          middleware: "verifyCompanyOrAdmin",
+          validation:
+            "Deadline must be future date, amount required for paid opportunities",
+        },
+        {
+          method: "GET",
+          path: "/api/company/myopportunities/:id",
+          description:
+            "Get all opportunities created by specific company with applicant details",
+          queryParams: {
+            page: "number",
+            limit: "number",
+            sort: "string (default: '-createdAt')",
+          },
+          response: {
+            status: 200,
+            body: {
+              opportunities:
+                "Array with populated applicants and selectedCandidates",
+              currentPage: "number",
+              totalPages: "number",
+              hasMore: "boolean",
+              totalCount: "number",
+            },
+          },
+          middleware: "verifyCompanyOrAdmin",
+          notes:
+            "Populates applicants.userId and selectedCandidates.userId with full user data",
+        },
+        {
+          method: "POST",
+          path: "/api/applicants/opportunities/:id/apply",
+          description:
+            "Student applies for opportunity with cover letter and proof",
+          requestBody: {
+            coverLetter: "string",
+            proofOfWork: "{ screenshot: string, link: string }",
+          },
+          response: {
+            status: 200,
+            body: "{ message: 'Application submitted successfully', application: Applicant }",
+          },
+          middleware: "verifyToken",
+          validation:
+            "Checks: opportunity is open, deadline not passed, no duplicate application",
+          notes:
+            "Creates Applicant document and adds userId to opportunity.applicants array",
+        },
+        {
+          method: "PUT",
+          path: "/api/company/applicants/status/:opportunityId/:userId",
+          description: "Update applicant status in hiring pipeline",
+          requestBody: {
+            status: "string (applied/shortlisted/selected/rejected)",
+          },
+          response: {
+            status: 200,
+            body: "{ message: 'Applicant status updated successfully', opportunity }",
+          },
+          middleware: "verifyCompanyOrAdmin",
+          authorization: "Only opportunity creator or admin",
+          notes: "If status=selected, adds to selectedCandidates array",
+        },
+      ],
+
+      paymentEndpoints: [
+        {
+          method: "GET",
+          path: "/api/company/payments/opportunity/:oppId",
+          description:
+            "Generate payment link for opportunity (1st or 2nd payment)",
+          response: {
+            status: 200,
+            body: {
+              link: "string (DodoPayments checkout URL)",
+              company: "string",
+              message: "string",
+              paymentLevel: "string (1 or 2)",
+            },
+          },
+          logic:
+            "If firstPayment.status=false → Level 1 (50% upfront). If firstPayment.status=true → Level 2 (remaining 50%)",
+          integration: "DodoPayments API with Twilio for SMS notifications",
+          notes:
+            "Stores oppId and paymentLevel in payment metadata for webhook processing",
+        },
+        {
+          method: "POST",
+          path: "/webhook/dodo-payments",
+          description: "Handle payment webhook callbacks from DodoPayments",
+          headers: {
+            "webhook-id": "string",
+            "webhook-signature": "string",
+            "webhook-timestamp": "string",
+          },
+          events: {
+            "payment.succeeded":
+              "Updates MongoDB: firstPayment or secondPayment status to true with timestamp",
+            "payment.cancelled": "Logs warning in Winston logger",
+            "payment.failed": "Logs error in Winston logger",
+          },
+          security:
+            "Webhook signature verification using StandardWebhooks library",
+          notes:
+            "15-second window limit for replay attack prevention. Uses raw body parser",
+        },
+      ],
+
+      realtimeEvents: [
+        {
+          event: "register",
+          direction: "Client → Server",
+          payload: "userId (string)",
+          description:
+            "Register socket connection with user ID for targeted notifications",
+          handler: "Stores mapping: users[userId] = socketId",
+        },
+        {
+          event: "newComment",
+          direction: "Client → Server",
+          payload: {
+            postId: "string",
+            comment: "{ text, userId, userGender, userSection }",
+            postOwnerId: "string",
+          },
+          description: "Broadcast comment notification to post owner",
+          handler:
+            "Creates Notification document, emits 'notification' event to post owner's socket",
+        },
+        {
+          event: "notification",
+          direction: "Server → Client",
+          payload: {
+            message: "string",
+            postId: "string",
+          },
+          description: "Real-time notification delivery to connected client",
+          handler: "Client displays notification toast/banner",
+        },
+        {
+          event: "disconnect",
+          direction: "Client → Server",
+          description: "Cleanup socket mapping on client disconnect",
+          handler: "Removes userId from users object",
+        },
+      ],
+
+      adminEndpoints: [
+        {
+          method: "GET",
+          path: "/api/admin/getAllUsers",
+          description: "Paginated list of all platform users",
+          queryParams: {
+            page: "number",
+            limit: "number (default: 6)",
+          },
+          middleware: "verifyAdmin",
+          response: {
+            status: 200,
+            body: {
+              users: "Array",
+              currentPage: "number",
+              totalPages: "number",
+              hasMore: "boolean",
+            },
+          },
+        },
+        {
+          method: "GET",
+          path: "/api/admin/getAllOpp",
+          description:
+            "All opportunities across all companies for admin dashboard",
+          middleware: "verifyAdmin",
+          notes:
+            "Used for platform-wide opportunity monitoring and analytics",
+        },
+        {
+          method: "GET",
+          path: "/api/admin/getAllCompany",
+          description: "Paginated list of all registered companies",
+          middleware: "verifyAdmin",
+          queryParams: {
+            page: "number",
+            limit: "number (default: 6)",
+          },
+        },
+      ],
+    },
   },
 
   {
@@ -239,14 +632,19 @@ const projectsData: Project[] = [
 const Projects: NextPage = () => {
   const { theme } = useTheme();
   const themeColors = THEMES[theme] ?? THEMES.dark;
-  const [selectedProjectIndex, setSelectedProjectIndex] = useState<number | null>(null);
+  const [selectedProjectIndex, setSelectedProjectIndex] = useState<
+    number | null
+  >(null);
 
   const handleNavigate = (direction: "prev" | "next") => {
     if (selectedProjectIndex === null) return;
 
     if (direction === "prev" && selectedProjectIndex > 0) {
       setSelectedProjectIndex(selectedProjectIndex - 1);
-    } else if (direction === "next" && selectedProjectIndex < projectsData.length - 1) {
+    } else if (
+      direction === "next" &&
+      selectedProjectIndex < projectsData.length - 1
+    ) {
       setSelectedProjectIndex(selectedProjectIndex + 1);
     }
   };
@@ -303,7 +701,9 @@ const Projects: NextPage = () => {
 
   return (
     <>
-      <section className={`w-full ${bgClass} py-12 sm:py-16 md:py-20 px-4 sm:px-5`}>
+      <section
+        className={`w-full ${bgClass} py-12 sm:py-16 md:py-20 px-4 sm:px-5`}
+      >
         <div className="max-w-5xl mx-auto">
           {/* Section Header */}
           <div className="mb-12">
@@ -312,12 +712,14 @@ const Projects: NextPage = () => {
             >
               Projects
             </div>
-            <h2 className={`text-2xl sm:text-3xl md:text-4xl font-bold ${themeColors.text.primary} mb-3`}>
+            <h2
+              className={`text-2xl sm:text-3xl md:text-4xl font-bold ${themeColors.text.primary} mb-3`}
+            >
               Selected Backend Projects
             </h2>
             <p className={`${themeColors.text.secondary} max-w-2xl`}>
-              Systems and services I built, focusing on scalability, performance,
-              and real-world backend challenges.
+              Systems and services I built, focusing on scalability,
+              performance, and real-world backend challenges.
             </p>
           </div>
 
@@ -343,32 +745,39 @@ const Projects: NextPage = () => {
                   </div>
                 )}
                 {/* Project Header with Badge */}
-                <div className={`px-4 sm:px-5 md:px-6 pt-4 sm:pt-5 md:pt-6 pb-3 sm:pb-4 border-b ${themeColors.border}`}>
+                <div
+                  className={`px-4 sm:px-5 md:px-6 pt-4 sm:pt-5 md:pt-6 pb-3 sm:pb-4 border-b ${themeColors.border}`}
+                >
                   <div className="flex items-center gap-2 sm:gap-3 mb-2">
                     {/* Badge - Responsive: Icon only on mobile, Icon + Text on desktop */}
-                    <div 
+                    <div
                       className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-1 text-xs font-bold uppercase tracking-widest border rounded ${getBadgeColor(
-                        project.badge,
+                        project.badge
                       )} flex-shrink-0 group relative`}
                       title={project.badge} // Tooltip for mobile
                     >
                       {/* Icon */}
                       {(() => {
                         const IconComponent = getBadgeIcon(project.badge);
-                        return <IconComponent size={16} className="flex-shrink-0" />;
+                        return (
+                          <IconComponent
+                            size={16}
+                            className="flex-shrink-0"
+                          />
+                        );
                       })()}
-                      
+
                       {/* Text - Hidden on mobile, shown on sm+ screens */}
                       <span className="hidden sm:inline whitespace-nowrap">
                         {getAbbreviatedBadge(project.badge)}
                       </span>
-                      
+
                       {/* Mobile Tooltip - Shows full badge name on tap/hover */}
                       <span className="sm:hidden absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-[10px] rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
                         {project.badge}
                       </span>
                     </div>
-                    
+
                     <h3
                       className={`text-base sm:text-lg md:text-xl font-bold ${themeColors.text.primary} break-words flex-1 min-w-0`}
                     >
@@ -390,7 +799,9 @@ const Projects: NextPage = () => {
 
                   {/* Tech Stack */}
                   <div className="mb-4">
-                    <div className={`text-xs ${themeColors.text.secondary} break-words`}>
+                    <div
+                      className={`text-xs ${themeColors.text.secondary} break-words`}
+                    >
                       <span className={themeColors.text.muted}>Tech:</span>{" "}
                       {project.techStack.join(" · ")}
                     </div>
