@@ -16,6 +16,476 @@ interface ProjectModalProps {
 
 type TabType = "overview" | "architecture" | "api";
 
+// EndpointCard Component
+interface EndpointCardProps {
+  endpoint: any;
+  theme: string;
+  themeColors: any;
+}
+
+const EndpointCard: React.FC<EndpointCardProps> = ({
+  endpoint,
+  theme,
+  themeColors,
+}) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const getMethodColor = (method: string) => {
+    switch (method.toUpperCase()) {
+      case "GET":
+        return theme === "dark"
+          ? "text-green-400 border-green-500"
+          : "text-green-600 border-green-500";
+      case "POST":
+        return theme === "dark"
+          ? "text-blue-400 border-blue-500"
+          : "text-blue-600 border-blue-500";
+      case "PUT":
+        return theme === "dark"
+          ? "text-orange-400 border-orange-500"
+          : "text-orange-600 border-orange-500";
+      case "PATCH":
+        return theme === "dark"
+          ? "text-purple-400 border-purple-500"
+          : "text-purple-600 border-purple-500";
+      case "DELETE":
+        return theme === "dark"
+          ? "text-red-400 border-red-500"
+          : "text-red-600 border-red-500";
+      default:
+        return theme === "dark"
+          ? "text-gray-400 border-gray-500"
+          : "text-gray-600 border-gray-500";
+    }
+  };
+
+  return (
+    <div
+      className={`rounded-lg border overflow-hidden ${
+        theme === "dark"
+          ? "bg-gray-800 border-gray-700"
+          : "bg-white border-gray-300"
+      }`}
+    >
+      {/* Header */}
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className={`w-full p-4 flex items-center justify-between transition ${
+          theme === "dark" ? "hover:bg-gray-700" : "hover:bg-gray-50"
+        }`}
+      >
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          <span
+            className={`px-3 py-1 text-xs font-bold uppercase rounded border-2 ${getMethodColor(
+              endpoint.method
+            )} flex-shrink-0`}
+          >
+            {endpoint.method}
+          </span>
+          <code
+            className={`font-mono text-sm ${themeColors.text.primary} truncate`}
+          >
+            {endpoint.path}
+          </code>
+        </div>
+        <span
+          className={`text-xl ${themeColors.text.secondary} flex-shrink-0 ml-2`}
+        >
+          {isExpanded ? "−" : "+"}
+        </span>
+      </button>
+
+      {/* Expanded Content */}
+      {isExpanded && (
+        <div
+          className={`p-4 border-t space-y-4 ${
+            theme === "dark"
+              ? "border-gray-700 bg-gray-750"
+              : "border-gray-200 bg-gray-50"
+          }`}
+        >
+          {/* Description */}
+          {endpoint.description && (
+            <div>
+              <h4
+                className={`text-xs font-bold ${themeColors.text.muted} uppercase mb-2`}
+              >
+                Description
+              </h4>
+              <p className={`text-sm ${themeColors.text.secondary}`}>
+                {endpoint.description}
+              </p>
+            </div>
+          )}
+
+          {/* Request Body */}
+          {endpoint.requestBody && (
+            <div>
+              <h4
+                className={`text-xs font-bold ${themeColors.text.muted} uppercase mb-2`}
+              >
+                Request Body
+              </h4>
+              <div
+                className={`p-3 rounded font-mono text-xs overflow-x-auto ${
+                  theme === "dark"
+                    ? "bg-gray-900 text-gray-300"
+                    : "bg-gray-900 text-gray-200"
+                }`}
+              >
+                <pre className="whitespace-pre-wrap break-all">
+                  {JSON.stringify(endpoint.requestBody, null, 2)}
+                </pre>
+              </div>
+            </div>
+          )}
+
+          {/* Query Params */}
+          {endpoint.queryParams && (
+            <div>
+              <h4
+                className={`text-xs font-bold ${themeColors.text.muted} uppercase mb-2`}
+              >
+                Query Parameters
+              </h4>
+              <div
+                className={`p-3 rounded font-mono text-xs overflow-x-auto ${
+                  theme === "dark"
+                    ? "bg-gray-900 text-gray-300"
+                    : "bg-gray-900 text-gray-200"
+                }`}
+              >
+                <pre className="whitespace-pre-wrap break-all">
+                  {JSON.stringify(endpoint.queryParams, null, 2)}
+                </pre>
+              </div>
+            </div>
+          )}
+
+          {/* Response */}
+          {endpoint.response && (
+            <div>
+              <h4
+                className={`text-xs font-bold ${themeColors.text.muted} uppercase mb-2`}
+              >
+                Response
+              </h4>
+              <div
+                className={`p-3 rounded space-y-2 ${
+                  theme === "dark" ? "bg-gray-900" : "bg-gray-900"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`px-2 py-0.5 text-xs font-bold rounded ${
+                      endpoint.response.status === 200 ||
+                      endpoint.response.status === 201
+                        ? "bg-green-500 bg-opacity-20 text-green-400"
+                        : "bg-red-500 bg-opacity-20 text-red-400"
+                    }`}
+                  >
+                    {endpoint.response.status}
+                  </span>
+                  <span className="text-xs text-gray-400">
+                    {endpoint.response.status === 200
+                      ? "OK"
+                      : endpoint.response.status === 201
+                      ? "Created"
+                      : "Error"}
+                  </span>
+                </div>
+                {endpoint.response.body && (
+                  <div className="font-mono text-xs text-gray-300 overflow-x-auto">
+                    <pre className="whitespace-pre-wrap break-all">
+                      {typeof endpoint.response.body === "string"
+                        ? endpoint.response.body
+                        : JSON.stringify(endpoint.response.body, null, 2)}
+                    </pre>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Middleware */}
+          {endpoint.middleware && (
+            <div
+              className={`flex items-start gap-2 p-3 rounded border ${
+                theme === "dark"
+                  ? "bg-purple-500 bg-opacity-10 border-purple-500 border-opacity-30"
+                  : "bg-purple-50 border-purple-200"
+              }`}
+            >
+              <span className="text-lg">🛡️</span>
+              <div>
+                <h4
+                  className={`text-xs font-bold uppercase mb-1 ${
+                    theme === "dark" ? "text-purple-300" : "text-purple-700"
+                  }`}
+                >
+                  Middleware
+                </h4>
+                <code
+                  className={`text-xs ${
+                    theme === "dark" ? "text-purple-200" : "text-purple-600"
+                  }`}
+                >
+                  {endpoint.middleware}
+                </code>
+              </div>
+            </div>
+          )}
+
+          {/* Security */}
+          {endpoint.security && (
+            <div
+              className={`flex items-start gap-2 p-3 rounded border ${
+                theme === "dark"
+                  ? "bg-yellow-500 bg-opacity-10 border-yellow-500 border-opacity-30"
+                  : "bg-yellow-50 border-yellow-200"
+              }`}
+            >
+              <span className="text-lg">⚠️</span>
+              <div>
+                <h4
+                  className={`text-xs font-bold uppercase mb-1 ${
+                    theme === "dark" ? "text-yellow-300" : "text-yellow-700"
+                  }`}
+                >
+                  Security
+                </h4>
+                <p
+                  className={`text-xs ${
+                    theme === "dark" ? "text-yellow-200" : "text-yellow-600"
+                  }`}
+                >
+                  {endpoint.security}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Authorization */}
+          {endpoint.authorization && (
+            <div
+              className={`flex items-start gap-2 p-3 rounded border ${
+                theme === "dark"
+                  ? "bg-red-500 bg-opacity-10 border-red-500 border-opacity-30"
+                  : "bg-red-50 border-red-200"
+              }`}
+            >
+              <span className="text-lg">🔒</span>
+              <div>
+                <h4
+                  className={`text-xs font-bold uppercase mb-1 ${
+                    theme === "dark" ? "text-red-300" : "text-red-700"
+                  }`}
+                >
+                  Authorization
+                </h4>
+                <p
+                  className={`text-xs ${
+                    theme === "dark" ? "text-red-200" : "text-red-600"
+                  }`}
+                >
+                  {endpoint.authorization}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Additional Info Tags */}
+          <div className="flex flex-wrap gap-2">
+            {endpoint.realtime && (
+              <span
+                className={`px-2 py-1 text-xs rounded border ${
+                  theme === "dark"
+                    ? "bg-cyan-500 bg-opacity-10 border-cyan-500 text-cyan-300"
+                    : "bg-cyan-50 border-cyan-300 text-cyan-700"
+                }`}
+              >
+                ⚡ {endpoint.realtime}
+              </span>
+            )}
+            {endpoint.validation && (
+              <span
+                className={`px-2 py-1 text-xs rounded border ${
+                  theme === "dark"
+                    ? "bg-blue-500 bg-opacity-10 border-blue-500 text-blue-300"
+                    : "bg-blue-50 border-blue-300 text-blue-700"
+                }`}
+              >
+                ✓ {endpoint.validation}
+              </span>
+            )}
+            {endpoint.integration && (
+              <span
+                className={`px-2 py-1 text-xs rounded border ${
+                  theme === "dark"
+                    ? "bg-green-500 bg-opacity-10 border-green-500 text-green-300"
+                    : "bg-green-50 border-green-300 text-green-700"
+                }`}
+              >
+                🔗 {endpoint.integration}
+              </span>
+            )}
+            {endpoint.logic && (
+              <span
+                className={`px-2 py-1 text-xs rounded border ${
+                  theme === "dark"
+                    ? "bg-purple-500 bg-opacity-10 border-purple-500 text-purple-300"
+                    : "bg-purple-50 border-purple-300 text-purple-700"
+                }`}
+              >
+                🧠 {endpoint.logic}
+              </span>
+            )}
+          </div>
+
+          {/* Notes */}
+          {endpoint.notes && (
+            <div
+              className={`text-xs ${themeColors.text.secondary} italic pl-3 border-l-2 ${
+                theme === "dark" ? "border-cyan-500" : "border-green-500"
+              }`}
+            >
+              💡 {endpoint.notes}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// RealtimeEventCard Component
+interface RealtimeEventCardProps {
+  event: any;
+  theme: string;
+  themeColors: any;
+}
+
+const RealtimeEventCard: React.FC<RealtimeEventCardProps> = ({
+  event,
+  theme,
+  themeColors,
+}) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const getDirectionColor = (direction: string) => {
+    if (direction.includes("→")) {
+      if (direction.startsWith("Client")) {
+        return theme === "dark"
+          ? "text-blue-400 border-blue-500"
+          : "text-blue-600 border-blue-500";
+      } else {
+        return theme === "dark"
+          ? "text-green-400 border-green-500"
+          : "text-green-600 border-green-500";
+      }
+    }
+    return theme === "dark"
+      ? "text-gray-400 border-gray-500"
+      : "text-gray-600 border-gray-500";
+  };
+
+  return (
+    <div
+      className={`rounded-lg border overflow-hidden ${
+        theme === "dark"
+          ? "bg-gray-800 border-gray-700"
+          : "bg-white border-gray-300"
+      }`}
+    >
+      {/* Header */}
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className={`w-full p-4 flex items-center justify-between transition ${
+          theme === "dark" ? "hover:bg-gray-700" : "hover:bg-gray-50"
+        }`}
+      >
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          <span
+            className={`px-3 py-1 text-xs font-bold uppercase rounded border-2 ${getDirectionColor(
+              event.direction
+            )} flex-shrink-0`}
+          >
+            {event.direction}
+          </span>
+          <code
+            className={`font-mono text-sm ${themeColors.text.primary} truncate`}
+          >
+            {event.event}
+          </code>
+        </div>
+        <span
+          className={`text-xl ${themeColors.text.secondary} flex-shrink-0 ml-2`}
+        >
+          {isExpanded ? "−" : "+"}
+        </span>
+      </button>
+
+      {/* Expanded Content */}
+      {isExpanded && (
+        <div
+          className={`p-4 border-t space-y-4 ${
+            theme === "dark"
+              ? "border-gray-700 bg-gray-750"
+              : "border-gray-200 bg-gray-50"
+          }`}
+        >
+          {/* Description */}
+          <div>
+            <h4
+              className={`text-xs font-bold ${themeColors.text.muted} uppercase mb-2`}
+            >
+              Description
+            </h4>
+            <p className={`text-sm ${themeColors.text.secondary}`}>
+              {event.description}
+            </p>
+          </div>
+
+          {/* Payload */}
+          {event.payload && (
+            <div>
+              <h4
+                className={`text-xs font-bold ${themeColors.text.muted} uppercase mb-2`}
+              >
+                Payload
+              </h4>
+              <div
+                className={`p-3 rounded font-mono text-xs overflow-x-auto ${
+                  theme === "dark"
+                    ? "bg-gray-900 text-gray-300"
+                    : "bg-gray-900 text-gray-200"
+                }`}
+              >
+                <pre className="whitespace-pre-wrap break-all">
+                  {typeof event.payload === "string"
+                    ? event.payload
+                    : JSON.stringify(event.payload, null, 2)}
+                </pre>
+              </div>
+            </div>
+          )}
+
+          {/* Handler Logic */}
+          {event.handler && (
+            <div
+              className={`text-xs ${themeColors.text.secondary} italic pl-3 border-l-2 ${
+                theme === "dark" ? "border-cyan-500" : "border-green-500"
+              }`}
+            >
+              🔧 Handler: {event.handler}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const ProjectModal: React.FC<ProjectModalProps> = ({
   project,
   isOpen,
@@ -63,12 +533,12 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
         if (e.key === "ArrowLeft") {
           e.preventDefault();
           setCurrentImageIndex((prev) =>
-            prev === 0 ? project.gallery!.length - 1 : prev - 1,
+            prev === 0 ? project.gallery!.length - 1 : prev - 1
           );
         } else if (e.key === "ArrowRight") {
           e.preventDefault();
           setCurrentImageIndex((prev) =>
-            prev === project.gallery!.length - 1 ? 0 : prev + 1,
+            prev === project.gallery!.length - 1 ? 0 : prev + 1
           );
         }
       } else if (!isLightboxOpen && onNavigate) {
@@ -127,13 +597,13 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
       if (isLeftSwipe) {
         // Swipe left - next image
         setCurrentImageIndex((prev) =>
-          prev === project.gallery!.length - 1 ? 0 : prev + 1,
+          prev === project.gallery!.length - 1 ? 0 : prev + 1
         );
       }
       if (isRightSwipe) {
         // Swipe right - previous image
         setCurrentImageIndex((prev) =>
-          prev === 0 ? project.gallery!.length - 1 : prev - 1,
+          prev === 0 ? project.gallery!.length - 1 : prev - 1
         );
       }
     }
@@ -237,7 +707,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
             <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0 mr-2">
               <span
                 className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-1 text-[10px] sm:text-xs font-bold uppercase tracking-widest border rounded ${getBadgeColor(
-                  project.badge,
+                  project.badge
                 )} flex-shrink-0`}
               >
                 {/* Icon */}
@@ -646,8 +1116,6 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                           </div>
                         </div>
                       )}
-
-                      {/* Basic Stats */}
                     </div>
                   </div>
                 </div>
@@ -720,7 +1188,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                                   {value}
                                 </p>
                               </div>
-                            ),
+                            )
                           )}
                     </div>
                   )}
@@ -728,7 +1196,219 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
               )}
 
               {/* API & Endpoints Tab */}
-              {activeTab === "api" && (
+              {activeTab === "api" && project.apiDocumentation && (
+                <div className="space-y-8 animate-fadeIn">
+                  {/* Base URL Section */}
+                  <div
+                    className={`p-4 rounded-lg border ${
+                      theme === "dark"
+                        ? "bg-gray-800 border-gray-700"
+                        : "bg-blue-50 border-blue-200"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-2xl">🌐</span>
+                      <h3
+                        className={`text-sm font-bold ${themeColors.text.primary} uppercase tracking-wide`}
+                      >
+                        Base URL
+                      </h3>
+                    </div>
+                    <code
+                      className={`font-mono text-sm ${
+                        theme === "dark" ? "text-cyan-300" : "text-blue-700"
+                      }`}
+                    >
+                      {project.apiDocumentation.baseUrl}
+                    </code>
+                  </div>
+
+                  {/* Authentication Endpoints */}
+                  {project.apiDocumentation.authEndpoints && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-4">
+                        <span className="text-2xl">🔐</span>
+                        <h3
+                          className={`text-lg font-bold ${themeColors.text.primary}`}
+                        >
+                          Authentication & Authorization
+                        </h3>
+                      </div>
+                      <div className="space-y-4">
+                        {project.apiDocumentation.authEndpoints.map(
+                          (endpoint, idx) => (
+                            <EndpointCard
+                              key={idx}
+                              endpoint={endpoint}
+                              theme={theme}
+                              themeColors={themeColors}
+                            />
+                          )
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Post Endpoints */}
+                  {project.apiDocumentation.postEndpoints && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-4">
+                        <span className="text-2xl">📝</span>
+                        <h3
+                          className={`text-lg font-bold ${themeColors.text.primary}`}
+                        >
+                          Posts & Social Feed
+                        </h3>
+                      </div>
+                      <div className="space-y-4">
+                        {project.apiDocumentation.postEndpoints.map(
+                          (endpoint, idx) => (
+                            <EndpointCard
+                              key={idx}
+                              endpoint={endpoint}
+                              theme={theme}
+                              themeColors={themeColors}
+                            />
+                          )
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Comment Endpoints */}
+                  {project.apiDocumentation.commentEndpoints && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-4">
+                        <span className="text-2xl">💬</span>
+                        <h3
+                          className={`text-lg font-bold ${themeColors.text.primary}`}
+                        >
+                          Comments & Interactions
+                        </h3>
+                      </div>
+                      <div className="space-y-4">
+                        {project.apiDocumentation.commentEndpoints.map(
+                          (endpoint, idx) => (
+                            <EndpointCard
+                              key={idx}
+                              endpoint={endpoint}
+                              theme={theme}
+                              themeColors={themeColors}
+                            />
+                          )
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Opportunity Endpoints */}
+                  {project.apiDocumentation.opportunityEndpoints && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-4">
+                        <span className="text-2xl">💼</span>
+                        <h3
+                          className={`text-lg font-bold ${themeColors.text.primary}`}
+                        >
+                          Economic Opportunities
+                        </h3>
+                      </div>
+                      <div className="space-y-4">
+                        {project.apiDocumentation.opportunityEndpoints.map(
+                          (endpoint, idx) => (
+                            <EndpointCard
+                              key={idx}
+                              endpoint={endpoint}
+                              theme={theme}
+                              themeColors={themeColors}
+                            />
+                          )
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Payment Endpoints */}
+                  {project.apiDocumentation.paymentEndpoints && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-4">
+                        <span className="text-2xl">💳</span>
+                        <h3
+                          className={`text-lg font-bold ${themeColors.text.primary}`}
+                        >
+                          Payment Processing
+                        </h3>
+                      </div>
+                      <div className="space-y-4">
+                        {project.apiDocumentation.paymentEndpoints.map(
+                          (endpoint, idx) => (
+                            <EndpointCard
+                              key={idx}
+                              endpoint={endpoint}
+                              theme={theme}
+                              themeColors={themeColors}
+                            />
+                          )
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Real-time Events */}
+                  {project.apiDocumentation.realtimeEvents && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-4">
+                        <span className="text-2xl">⚡</span>
+                        <h3
+                          className={`text-lg font-bold ${themeColors.text.primary}`}
+                        >
+                          Real-time WebSocket Events
+                        </h3>
+                      </div>
+                      <div className="space-y-4">
+                        {project.apiDocumentation.realtimeEvents.map(
+                          (event, idx) => (
+                            <RealtimeEventCard
+                              key={idx}
+                              event={event}
+                              theme={theme}
+                              themeColors={themeColors}
+                            />
+                          )
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Admin Endpoints */}
+                  {project.apiDocumentation.adminEndpoints && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-4">
+                        <span className="text-2xl">👑</span>
+                        <h3
+                          className={`text-lg font-bold ${themeColors.text.primary}`}
+                        >
+                          Admin Dashboard
+                        </h3>
+                      </div>
+                      <div className="space-y-4">
+                        {project.apiDocumentation.adminEndpoints.map(
+                          (endpoint, idx) => (
+                            <EndpointCard
+                              key={idx}
+                              endpoint={endpoint}
+                              theme={theme}
+                              themeColors={themeColors}
+                            />
+                          )
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Fallback for projects without API documentation */}
+              {activeTab === "api" && !project.apiDocumentation && (
                 <div className="space-y-6 animate-fadeIn">
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Key Endpoints */}
@@ -962,7 +1642,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                 <button
                   onClick={() =>
                     setCurrentImageIndex((prev) =>
-                      prev === 0 ? galleryImages.length - 1 : prev - 1,
+                      prev === 0 ? galleryImages.length - 1 : prev - 1
                     )
                   }
                   className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white p-4 sm:p-3 rounded-full transition text-xl sm:text-base min-w-[56px] min-h-[56px] sm:min-w-0 sm:min-h-0 flex items-center justify-center"
@@ -973,7 +1653,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                 <button
                   onClick={() =>
                     setCurrentImageIndex((prev) =>
-                      prev === galleryImages.length - 1 ? 0 : prev + 1,
+                      prev === galleryImages.length - 1 ? 0 : prev + 1
                     )
                   }
                   className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white p-4 sm:p-3 rounded-full transition text-xl sm:text-base min-w-[56px] min-h-[56px] sm:min-w-0 sm:min-h-0 flex items-center justify-center"
