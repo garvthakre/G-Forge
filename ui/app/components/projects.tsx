@@ -164,7 +164,7 @@ const projectsData: Project[] = [
       "Real-time queue updates with <100ms latency",
       "Role-based filtering reducing API response size by 60%",
     ],
-    image: "/QueueFlex/queueflex.png",
+    image: "/QueueFlex/queueflex-landing.png",
     github: "https://github.com/yourusername/queueflex",
     demo: "https://queueflex-demo.vercel.app",
   },
