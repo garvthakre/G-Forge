@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useTheme } from "@/app/context/ThemeContext";
-import { THEMES } from "@/app/utils/themes";
-import { Project } from "@/app/utils/projectTypes";
+import { useTheme } from "../context/ThemeContext";
+import { THEMES } from "../utils/themes";
+import { Project } from "../utils/ProjectTypes";
 import { getBadgeIcon, getAbbreviatedBadge } from "./BadgeIcons";
 
 interface ProjectModalProps {
@@ -63,12 +63,12 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
         if (e.key === "ArrowLeft") {
           e.preventDefault();
           setCurrentImageIndex((prev) =>
-            prev === 0 ? project.gallery!.length - 1 : prev - 1
+            prev === 0 ? project.gallery!.length - 1 : prev - 1,
           );
         } else if (e.key === "ArrowRight") {
           e.preventDefault();
           setCurrentImageIndex((prev) =>
-            prev === project.gallery!.length - 1 ? 0 : prev + 1
+            prev === project.gallery!.length - 1 ? 0 : prev + 1,
           );
         }
       } else if (!isLightboxOpen && onNavigate) {
@@ -88,7 +88,14 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
     return () => {
       document.removeEventListener("keydown", handleArrowKeys);
     };
-  }, [isOpen, isLightboxOpen, project.gallery, onNavigate, hasPrevious, hasNext]);
+  }, [
+    isOpen,
+    isLightboxOpen,
+    project.gallery,
+    onNavigate,
+    hasPrevious,
+    hasNext,
+  ]);
 
   // Reset to overview tab when modal opens
   useEffect(() => {
@@ -120,13 +127,13 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
       if (isLeftSwipe) {
         // Swipe left - next image
         setCurrentImageIndex((prev) =>
-          prev === project.gallery!.length - 1 ? 0 : prev + 1
+          prev === project.gallery!.length - 1 ? 0 : prev + 1,
         );
       }
       if (isRightSwipe) {
         // Swipe right - previous image
         setCurrentImageIndex((prev) =>
-          prev === 0 ? project.gallery!.length - 1 : prev - 1
+          prev === 0 ? project.gallery!.length - 1 : prev - 1,
         );
       }
     }
@@ -137,7 +144,9 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
   const modalBg =
     theme === "dark" ? "bg-gray-900 bg-opacity-95" : "bg-white bg-opacity-95";
   const contentBg =
-    theme === "dark" ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200";
+    theme === "dark"
+      ? "bg-gray-800 border-gray-700"
+      : "bg-white border-gray-200";
   const tabActiveBg =
     theme === "dark"
       ? "bg-cyan-500 bg-opacity-20 border-cyan-500"
@@ -183,10 +192,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
         style={{ backdropFilter: "blur(8px)" }}
       >
         {/* Backdrop */}
-        <div
-          className={`absolute inset-0 ${modalBg}`}
-          onClick={onClose}
-        ></div>
+        <div className={`absolute inset-0 ${modalBg}`} onClick={onClose}></div>
 
         {/* Previous Project Button - Hidden on mobile, visible on desktop */}
         {hasPrevious && onNavigate && (
@@ -231,7 +237,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
             <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0 mr-2">
               <span
                 className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-1 text-[10px] sm:text-xs font-bold uppercase tracking-widest border rounded ${getBadgeColor(
-                  project.badge
+                  project.badge,
                 )} flex-shrink-0`}
               >
                 {/* Icon */}
@@ -239,9 +245,11 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                   const IconComponent = getBadgeIcon(project.badge);
                   return <IconComponent size={14} className="sm:w-4 sm:h-4" />;
                 })()}
-                
+
                 {/* Full text in modal - abbreviated on small screens */}
-                <span className="hidden xs:inline sm:hidden">{getAbbreviatedBadge(project.badge)}</span>
+                <span className="hidden xs:inline sm:hidden">
+                  {getAbbreviatedBadge(project.badge)}
+                </span>
                 <span className="hidden sm:inline">{project.badge}</span>
               </span>
               <h2
@@ -250,7 +258,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                 {project.title}
               </h2>
             </div>
-            
+
             {/* Mobile Navigation Buttons - Only on mobile */}
             <div className="flex md:hidden items-center gap-2 mr-2">
               {hasPrevious && onNavigate && (
@@ -428,7 +436,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                               View All ({galleryImages.length})
                             </button>
                           </div>
-                          
+
                           {/* Thumbnail Grid */}
                           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
                             {galleryImages.slice(0, 6).map((img, idx) => (
@@ -461,7 +469,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                               </button>
                             ))}
                           </div>
-                          
+
                           {/* Show more button if more than 6 images */}
                           {galleryImages.length > 6 && (
                             <button
@@ -529,7 +537,9 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                                     : "bg-gray-50 border-gray-300"
                                 }`}
                               >
-                                <p className={`${themeColors.text.secondary} text-sm sm:text-base`}>
+                                <p
+                                  className={`${themeColors.text.secondary} text-sm sm:text-base`}
+                                >
                                   {role}
                                 </p>
                               </div>
@@ -638,8 +648,6 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                       )}
 
                       {/* Basic Stats */}
-                      
-                      
                     </div>
                   </div>
                 </div>
@@ -656,8 +664,12 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                         : "bg-gray-100 border-gray-300"
                     } flex items-center justify-center`}
                   >
-                    <div className={`text-center ${themeColors.text.muted} p-4`}>
-                      <div className="text-4xl sm:text-6xl mb-2 sm:mb-4">📐</div>
+                    <div
+                      className={`text-center ${themeColors.text.muted} p-4`}
+                    >
+                      <div className="text-4xl sm:text-6xl mb-2 sm:mb-4">
+                        📐
+                      </div>
                       <div className="text-sm sm:text-lg font-semibold mb-2">
                         System Architecture
                       </div>
@@ -670,46 +682,46 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                   {/* Architecture Details */}
                   {project.architecture && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-                      {Array.isArray(project.architecture) ? (
-                        project.architecture.map((item, idx) => (
-                          <div
-                            key={idx}
-                            className={`p-3 sm:p-4 rounded-lg border ${
-                              theme === "dark"
-                                ? "bg-gray-700 bg-opacity-30 border-gray-600"
-                                : "bg-gray-50 border-gray-300"
-                            }`}
-                          >
-                            <p className={`${themeColors.text.secondary} text-sm sm:text-base`}>
-                              {item}
-                            </p>
-                          </div>
-                        ))
-                      ) : (
-                        Object.entries(project.architecture).map(
-                          ([key, value]) => (
+                      {Array.isArray(project.architecture)
+                        ? project.architecture.map((item, idx) => (
                             <div
-                              key={key}
+                              key={idx}
                               className={`p-3 sm:p-4 rounded-lg border ${
                                 theme === "dark"
                                   ? "bg-gray-700 bg-opacity-30 border-gray-600"
                                   : "bg-gray-50 border-gray-300"
                               }`}
                             >
-                              <h4
-                                className={`text-xs sm:text-sm font-bold ${themeColors.text.primary} mb-2 uppercase`}
-                              >
-                                {key}
-                              </h4>
                               <p
-                                className={`text-xs sm:text-sm ${themeColors.text.secondary}`}
+                                className={`${themeColors.text.secondary} text-sm sm:text-base`}
                               >
-                                {value}
+                                {item}
                               </p>
                             </div>
-                          )
-                        )
-                      )}
+                          ))
+                        : Object.entries(project.architecture).map(
+                            ([key, value]) => (
+                              <div
+                                key={key}
+                                className={`p-3 sm:p-4 rounded-lg border ${
+                                  theme === "dark"
+                                    ? "bg-gray-700 bg-opacity-30 border-gray-600"
+                                    : "bg-gray-50 border-gray-300"
+                                }`}
+                              >
+                                <h4
+                                  className={`text-xs sm:text-sm font-bold ${themeColors.text.primary} mb-2 uppercase`}
+                                >
+                                  {key}
+                                </h4>
+                                <p
+                                  className={`text-xs sm:text-sm ${themeColors.text.secondary}`}
+                                >
+                                  {value}
+                                </p>
+                              </div>
+                            ),
+                          )}
                     </div>
                   )}
                 </div>
@@ -728,7 +740,11 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                       </h3>
                       <div className="space-y-2 sm:space-y-3 font-mono text-xs sm:text-sm">
                         {[
-                          { method: "GET", path: "/api/status", color: "green" },
+                          {
+                            method: "GET",
+                            path: "/api/status",
+                            color: "green",
+                          },
                           {
                             method: "POST",
                             path: "/api/resource",
@@ -766,7 +782,9 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                             >
                               {endpoint.method}
                             </span>{" "}
-                            <span className={`${themeColors.text.secondary} break-all`}>
+                            <span
+                              className={`${themeColors.text.secondary} break-all`}
+                            >
                               {endpoint.path}
                             </span>
                           </div>
@@ -915,7 +933,9 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
         >
           {/* Lightbox Header */}
           <div className="flex items-center justify-between p-4 sm:p-6">
-            <div className={`${themeColors.text.primary} font-semibold text-sm sm:text-base`}>
+            <div
+              className={`${themeColors.text.primary} font-semibold text-sm sm:text-base`}
+            >
               {currentImageIndex + 1} / {galleryImages.length}
             </div>
             <button
@@ -942,7 +962,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                 <button
                   onClick={() =>
                     setCurrentImageIndex((prev) =>
-                      prev === 0 ? galleryImages.length - 1 : prev - 1
+                      prev === 0 ? galleryImages.length - 1 : prev - 1,
                     )
                   }
                   className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white p-4 sm:p-3 rounded-full transition text-xl sm:text-base min-w-[56px] min-h-[56px] sm:min-w-0 sm:min-h-0 flex items-center justify-center"
@@ -953,7 +973,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                 <button
                   onClick={() =>
                     setCurrentImageIndex((prev) =>
-                      prev === galleryImages.length - 1 ? 0 : prev + 1
+                      prev === galleryImages.length - 1 ? 0 : prev + 1,
                     )
                   }
                   className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white p-4 sm:p-3 rounded-full transition text-xl sm:text-base min-w-[56px] min-h-[56px] sm:min-w-0 sm:min-h-0 flex items-center justify-center"

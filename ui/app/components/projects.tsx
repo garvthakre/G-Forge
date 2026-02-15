@@ -1,10 +1,10 @@
 "use client";
 import { NextPage } from "next";
 import { useState } from "react";
-import { useTheme } from "@/app/context/ThemeContext";
-import { THEMES } from "@/app/utils/themes";
+import { useTheme } from "../context/ThemeContext";
+import { THEMES } from "../utils/themes";
 import ProjectModal from "../modals/ProjectModal";
-import { Project } from "@/app/utils/projectTypes";
+import { Project } from "../utils/ProjectTypes";
 import { getBadgeIcon, getAbbreviatedBadge } from "../modals/BadgeIcons";
 
 const projectsData: Project[] = [
