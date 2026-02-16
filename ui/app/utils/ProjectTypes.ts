@@ -42,6 +42,11 @@ export interface ApiDocumentation {
   paymentEndpoints?: ApiEndpoint[];
   realtimeEvents?: RealtimeEvent[];
   adminEndpoints?: ApiEndpoint[];
+  documentEndpoints?: ApiEndpoint[];
+  chatEndpoints?: ApiEndpoint[];
+  queryEndpoints?: ApiEndpoint[];
+  spaceEndpoints?: ApiEndpoint[];
+  queueEndpoints?: ApiEndpoint[];
 }
 
 export interface ApiEndpoint {
