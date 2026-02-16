@@ -1534,30 +1534,335 @@ const projectsData: Project[] = [
       demo: "https://youtu.be/m40BFgn-Oqo",
     },
   },
-  {
-    id: "gemledger",
-    badge: "BLOCKCHAIN",
-    title: "GemLedger: Diamond Supply Chain Tracker",
-    description:
-      "Blockchain-based supply chain platform providing end-to-end diamond traceability with cryptographic proof of authenticity, enabling transparent ownership transfers across mining, processing, certification, and retail stages.",
-    techStack: [
-      "Solidity",
-      "React.js",
-      "Node.js",
-      "MongoDB",
-      "Ethereum",
-      "IPFS",
-      "Hardhat",
-    ],
-    features: [
-      "Immutable on-chain diamond registry",
-      "Role-based access for 5 supply chain actors",
-      "Decentralized image storage via IPFS",
-      "Tamper-proof digital certification",
-    ],
-    image: "/gemledger/gemledger.png",
-    awards: "IIT Bhilai Fintech Hackathon Winner",
+ 
+
+{
+  id: "gemledger",
+  badge: "BLOCKCHAIN",
+  title: "GemLedger: Diamond Supply Chain Tracker",
+  description:
+    "Blockchain-based supply chain platform providing end-to-end diamond traceability with cryptographic proof of authenticity, enabling transparent ownership transfers across mining, processing, certification, and retail stages.",
+  techStack: [
+    "Solidity",
+    "React.js",
+    "Node.js",
+    "MongoDB",
+    "Ethereum",
+    "IPFS",
+    "Hardhat",
+    "ethers.js v6",
+    "Express.js",
+    "JWT",
+  ],
+  features: [
+    "Immutable on-chain diamond registry via DiamondTracker smart contract",
+    "Role-based access for 5 supply chain actors: Processing, Polishing, Certification, Retailer, Consumer",
+    "IPFS imageHash stored on-chain — tamper-proof document & image linking",
+    "On-chain ownership transfer with new imageHash at every handoff",
+    "Verifier role marks diamonds as certified (verified=true) on-chain",
+    "Dual-layer persistence: Ethereum for immutability, MongoDB for queryability",
+    "JWT authentication with role embedded in token payload",
+    "Hardhat local dev network + Infura RPC for live deployment",
+  ],
+  highlights: [
+    "Every createDiamond and transferOwnership call writes to Ethereum — txHash returned to client",
+    "diamondCount auto-increments on-chain as the canonical ID source",
+    "MongoDB Diamond document mirrors chain state for fast off-chain querying",
+    "Wallet signs all transactions server-side using PRIVATE_KEY + JsonRpcProvider",
+    "authMiddleware extracts role from JWT — enables future role-gated route protection",
+    "transferOwnership updates both the owner AND the imageHash, creating an auditable image trail",
+    "verifyDiamond() is a dedicated on-chain function — verification cannot be faked off-chain",
+    "Contract compiled with Solidity 0.8.20, EVM version paris, deployed via Hardhat",
+  ],
+  architecture: {
+    "Smart Contract — DiamondTracker.sol":
+      "Solidity 0.8.20 contract deployed on Ethereum (Hardhat local / Infura RPC). Stores a mapping(uint => Diamond) where each Diamond holds: id (uint, auto-increment from diamondCount), condition (string), owner (string), verified (bool, default false), imageHash (string — IPFS CID). Three state-changing functions: createDiamond(), transferOwnership(), verifyDiamond(). One view: diamonds(uint). diamondCount is public state used as the sequential ID.",
+
+    "Backend API — Node.js + Express":
+      "REST API on port 5000 with two route modules: /api/auth (signup/login, no middleware) and /api/diamond (create/transfer/update behind JWT authMiddleware, processing fetch is public). express.json() and cors() applied globally. Global error handler catches unhandled errors and returns 500 with message.",
+
+    "Blockchain Integration — ethers.js v6":
+      "getContractInstance() utility creates an ethers.Contract using: CONTRACT_ADDRESS (0x5FbDB2315678afecb367f032d93F642f64180aa3), ABI loaded from Hardhat artifact JSON, JsonRpcProvider pointed at INFURA_URL, and a Wallet initialized with PRIVATE_KEY. Every route that writes to chain calls contract.createDiamond() or contract.transferOwnership(), awaits tx.wait() for confirmation, then saves/updates MongoDB.",
+
+    "Authentication — JWT + bcrypt":
+      "Signup hashes password with bcryptjs (salt rounds 10), stores User in MongoDB with role enum [Processing, Polishing, Certification, Retailer, Consumer]. Login verifies hash, returns JWT signed with { id, role } payload, 1h expiry. authMiddleware reads raw token from Authorization header, calls jwt.verify(), attaches decoded payload to req.user. Token carries role for downstream role-based logic.",
+
+    "Data Persistence — MongoDB (Mongoose)":
+      "Two collections: User (name, email, password, role) and Diamond (diamondId, condition, owner, verified, status). Diamond.status is an off-chain enum [processing, completed, pending] used for workflow filtering — separate from the on-chain verified boolean. MongoDB serves as the queryable mirror of chain state, enabling fast filtered fetches like GET /processing without on-chain calls.",
+
+    "Contract Deployment — Hardhat":
+      "Hardhat config targets Solidity 0.8.20, EVM paris, optimizer disabled. deploy.js script uses ethers.getContractFactory('DiamondTracker'), deploys, awaits waitForDeployment(), logs the address. Local development uses the built-in Hardhat network; production targets Ethereum via Infura. ABI artifact at diamond-contract/artifacts/contracts/DiamondTracking.sol/DiamondTracker.json is imported directly by the backend.",
+
+    "IPFS Image Storage":
+      "Diamond images are stored on IPFS and their CID (content hash) is passed as imageHash to both the smart contract and the backend. This means image authenticity is cryptographically tied to the on-chain record — any image tampering would produce a different CID and break the chain of custody. transferOwnership() accepts a new imageHash, allowing updated photos at each supply chain stage.",
+
+    "Data Flow — Diamond Lifecycle":
+      "1) Miner/Processor calls POST /api/diamond/create with condition, owner, imageHash → 2) Backend calls contract.createDiamond() on Ethereum → tx confirmed → 3) MongoDB Diamond saved with status=processing → 4) At each stage, actor calls POST /api/diamond/transfer/:id with newOwner → 5) contract.transferOwnership() updates on-chain owner + imageHash → 6) MongoDB updated → 7) Certifier calls PUT /api/diamond/update/:id to reflect verified status off-chain (on-chain verifyDiamond() available separately).",
   },
+
+  userRoles: [
+    "Processing: Initial stage actor who registers raw diamonds on-chain via POST /api/diamond/create. Provides condition assessment, owns the diamond at creation, and uploads the first IPFS imageHash.",
+    "Polishing: Receives ownership transfer from Processing stage. Calls POST /api/diamond/transfer/:id with their identity as newOwner and an updated imageHash showing the polished stone.",
+    "Certification: Receives polished diamond, performs grading, and marks the diamond as verified on-chain via verifyDiamond(). Updates metadata via PUT /api/diamond/update/:id.",
+    "Retailer: Final commercial stage before consumer. Receives certified diamond via ownership transfer. Can update diamond status to 'completed' once sold.",
+    "Consumer: End buyer. Can view diamond provenance via GET /api/diamond/processing or direct contract read — full audit trail of every owner and imageHash is immutably on-chain.",
+  ],
+
+  metrics: [
+    "5 smart contract functions: createDiamond, transferOwnership, verifyDiamond, diamonds (view), diamondCount (view)",
+    "Every ownership transfer recorded immutably on Ethereum with txHash",
+    "Dual storage: Ethereum (immutable) + MongoDB (queryable) for optimal read/write performance",
+    "JWT tokens with role payload enabling 5-tier access control",
+    "IPFS imageHash updated at every transfer — cryptographic image audit trail",
+    "Solidity 0.8.20, EVM paris, Hardhat toolchain",
+  ],
+
+  image: "/gemledger/gemledger.png",
+  awards: "IIT Bhilai Fintech Hackathon Winner",
+
+  apiDocumentation: {
+    baseUrl: "http://localhost:5000",
+
+    authEndpoints: [
+      {
+        method: "POST",
+        path: "/api/auth/signup",
+        description: "Register a new supply chain actor with a specific role",
+        requestBody: {
+          name: "string (required)",
+          email: "string (required, unique)",
+          password: "string (required — bcrypt hashed with salt 10)",
+          role: "string (required) — enum: Processing | Polishing | Certification | Retailer | Consumer",
+        },
+        response: {
+          status: 201,
+          body: {
+            token: "string (JWT, expires 1h)",
+            user: { role: "string" },
+            message: "User Registered Successfully",
+          },
+        },
+        security: "Password hashed with bcryptjs (10 salt rounds) before MongoDB insert",
+        notes:
+          "Token payload contains { id: ObjectId, role: string }. Role is validated against enum at schema level — invalid roles return Mongoose validation error.",
+      },
+      {
+        method: "POST",
+        path: "/api/auth/login",
+        description: "Authenticate a supply chain actor and receive a JWT",
+        requestBody: {
+          email: "string (required)",
+          password: "string (required)",
+        },
+        response: {
+          status: 200,
+          body: {
+            token: "string (JWT, expires 1h)",
+            user: { role: "string" },
+          },
+        },
+        security: "bcrypt.compare() used for password verification — timing-safe",
+        notes:
+          "Returns 400 if user not found or password invalid. Token must be sent as raw value in Authorization header (no Bearer prefix) for protected routes.",
+      },
+    ],
+
+    diamondEndpoints: [
+      {
+        method: "POST",
+        path: "/api/diamond/create",
+        description:
+          "Register a new diamond on the Ethereum blockchain and persist metadata to MongoDB",
+        middleware: "authMiddleware (JWT required in Authorization header)",
+        requestBody: {
+          condition: "string (required) — e.g. 'Raw', 'Polished', 'Certified'",
+          owner: "string (required) — name or wallet address of initial owner",
+          imageHash: "string (required) — IPFS CID of diamond image/document",
+        },
+        response: {
+          status: 200,
+          body: {
+            message: "Diamond Created Successfully!",
+            txHash: "string (Ethereum transaction hash)",
+            diamond: {
+              _id: "MongoDB ObjectId",
+              condition: "string",
+              owner: "string",
+              imageHash: "string",
+              status: "processing",
+            },
+          },
+        },
+        logic:
+          "1) Validate all fields present → 2) getContractInstance() → 3) contract.createDiamond(condition, owner, imageHash) → 4) await tx.wait() for on-chain confirmation → 5) new Diamond({ condition, owner, imageHash, status: 'processing' }).save() to MongoDB → 6) Return txHash + saved document",
+        integration: "ethers.js v6 — DiamondTracker.createDiamond() on Ethereum",
+        notes:
+          "diamondCount auto-increments on-chain. The MongoDB _id and the on-chain diamondCount are separate identifiers — use MongoDB _id for transfer/:id route.",
+      },
+      {
+        method: "GET",
+        path: "/api/diamond/processing",
+        description:
+          "Fetch all diamonds currently in the processing stage from MongoDB",
+        response: {
+          status: 200,
+          body: [
+            {
+              _id: "MongoDB ObjectId",
+              diamondId: "number",
+              condition: "string",
+              owner: "string",
+              verified: "boolean",
+              status: "processing",
+            },
+          ],
+        },
+        notes:
+          "No authentication required — public endpoint. Queries MongoDB for { status: 'processing' }. Returns 404 if no diamonds found. Does not call the blockchain — uses MongoDB mirror for fast reads.",
+      },
+      {
+        method: "POST",
+        path: "/api/diamond/transfer/:id",
+        description:
+          "Transfer diamond ownership to the next supply chain actor on-chain and update MongoDB",
+        middleware: "authMiddleware (JWT required)",
+        requestBody: {
+          newOwner: "string (required) — identity of receiving actor",
+        },
+        response: {
+          status: 200,
+          body: {
+            message: "Ownership Transferred Successfully!",
+            txHash: "string (Ethereum transaction hash)",
+            diamond: {
+              _id: "MongoDB ObjectId",
+              owner: "string (updated to newOwner)",
+              condition: "string",
+              status: "string",
+            },
+          },
+        },
+        logic:
+          "1) Validate newOwner present → 2) getContractInstance() → 3) contract.transferOwnership(id, newOwner) → 4) await tx.wait() → 5) Diamond.findByIdAndUpdate(id, { owner: newOwner }, { new: true }) → 6) Return txHash + updated document",
+        integration: "ethers.js v6 — DiamondTracker.transferOwnership(uint _id, string _newOwner, string _newImageHash)",
+        notes:
+          "The :id param is the MongoDB ObjectId used as the on-chain uint id. Note: the contract's transferOwnership also accepts _newImageHash but the route currently passes only newOwner — imageHash can be added to req.body to update the IPFS reference at transfer time.",
+      },
+      {
+        method: "PUT",
+        path: "/api/diamond/update/:id",
+        description:
+          "Update any diamond metadata fields in MongoDB (off-chain state update)",
+        middleware: "authMiddleware (JWT required)",
+        requestBody: {
+          condition: "string (optional)",
+          owner: "string (optional)",
+          verified: "boolean (optional)",
+          status: "string (optional) — enum: processing | completed | pending",
+          diamondId: "number (optional)",
+        },
+        response: {
+          status: 200,
+          body: {
+            _id: "MongoDB ObjectId",
+            diamondId: "number",
+            condition: "string",
+            owner: "string",
+            verified: "boolean",
+            status: "string",
+          },
+        },
+        notes:
+          "Uses findByIdAndUpdate with { new: true } — returns updated document. This is a MongoDB-only update and does NOT write to the blockchain. To mark verified on-chain, call the contract's verifyDiamond() function directly. Returns 404 if diamond not found.",
+      },
+    ],
+
+    smartContractFunctions: [
+      {
+        method: "FUNCTION",
+        path: "createDiamond(string _condition, string _owner, string _imageHash)",
+        description:
+          "Register a new diamond on-chain. Increments diamondCount and stores Diamond struct in the mapping.",
+        requestBody: {
+          _condition: "string — physical state of the diamond",
+          _owner: "string — initial owner identifier",
+          _imageHash: "string — IPFS CID of diamond image",
+        },
+        response: {
+          status: 200,
+          body: "No return value. Side effect: diamonds[diamondCount] = Diamond(diamondCount, _condition, _owner, false, _imageHash)",
+        },
+        notes:
+          "stateMutability: nonpayable. diamondCount starts at 0 and increments before assignment, so first diamond gets id=1. verified defaults to false at creation.",
+      },
+      {
+        method: "FUNCTION",
+        path: "transferOwnership(uint _id, string _newOwner, string _newImageHash)",
+        description:
+          "Update the owner and imageHash of an existing on-chain diamond record.",
+        requestBody: {
+          _id: "uint — on-chain diamond ID (from diamondCount)",
+          _newOwner: "string — new owner identifier",
+          _newImageHash: "string — updated IPFS CID for new stage image",
+        },
+        response: {
+          status: 200,
+          body: "No return value. Side effect: diamonds[_id].owner = _newOwner; diamonds[_id].imageHash = _newImageHash",
+        },
+        notes:
+          "stateMutability: nonpayable. Both owner and imageHash are updated atomically — creating a cryptographically linked image audit trail at every ownership change.",
+      },
+      {
+        method: "FUNCTION",
+        path: "verifyDiamond(uint _id)",
+        description:
+          "Mark a diamond as verified on-chain. Irreversible — sets verified=true permanently.",
+        requestBody: {
+          _id: "uint — on-chain diamond ID",
+        },
+        response: {
+          status: 200,
+          body: "No return value. Side effect: diamonds[_id].verified = true",
+        },
+        notes:
+          "stateMutability: nonpayable. Once verified=true is written to the blockchain it cannot be reverted without a new transaction explicitly setting it back (no such function exists in the current contract — verification is effectively final).",
+      },
+      {
+        method: "GET",
+        path: "diamonds(uint) — public view",
+        description:
+          "Read a diamond record directly from on-chain storage by its ID.",
+        requestBody: {
+          id: "uint — diamond ID (1-based, up to diamondCount)",
+        },
+        response: {
+          status: 200,
+          body: {
+            id: "uint",
+            condition: "string",
+            owner: "string",
+            verified: "bool",
+            imageHash: "string (IPFS CID)",
+          },
+        },
+        notes:
+          "stateMutability: view — no gas cost for read. Auto-generated Solidity getter for the public mapping. Call directly via ethers.js: contract.diamonds(id).",
+      },
+      {
+        method: "GET",
+        path: "diamondCount() — public view",
+        description:
+          "Returns the total number of diamonds registered on-chain. Also serves as the last assigned diamond ID.",
+        response: {
+          status: 200,
+          body: "uint — current diamond count / last diamond ID",
+        },
+        notes:
+          "stateMutability: view. Use this to paginate over all diamonds: iterate from 1 to diamondCount and call diamonds(i) for each.",
+      },
+    ],
+  },
+},
   {
     id: "sheshield",
     badge: "FULL-STACK",
