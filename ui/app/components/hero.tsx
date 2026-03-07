@@ -123,17 +123,26 @@ const Hero: NextPage<Props> = ({}) => {
             <div className={`mb-8 pb-8 border-b ${themeColors.border}`}></div>
 
             {/* Endpoint Buttons */}
+               
             <div className="flex flex-col gap-3">
-              <button
-                className={`flex items-center space-x-2 px-4 py-3 border-2 transition font-mono text-xs justify-center rounded-lg ${
-                  theme === "dark"
-                    ? "border-emerald-500 text-emerald-400 hover:bg-emerald-500/20 hover:shadow-lg hover:shadow-emerald-500/30"
-                    : "border-emerald-600 text-emerald-700 hover:bg-emerald-600 hover:text-white"
-                }`}
-              >
-                <span className="font-bold">GET</span>
+              
+<button
+    onClick={() =>
+      window.open(
+        "https://drive.google.com/file/d/1Gs5mtcGwMYSV3Xol30v4z_zyxMKeGID1/view?usp=sharing",
+        "_blank"
+      )
+    }
+    className={`flex items-center space-x-2 px-4 py-3 border-2 transition font-mono text-xs justify-center rounded-lg ${
+      theme === "dark"
+        ? "border-emerald-500 text-emerald-400 hover:bg-emerald-500/20 hover:shadow-lg hover:shadow-emerald-500/30"
+        : "border-emerald-600 text-emerald-700 hover:bg-emerald-600 hover:text-white"
+    }`}
+  >
+    <span className="font-bold">GET</span>
                 <span>/resume</span>
               </button>
+               
               <button
                 className={`px-4 py-3 border-2 transition font-bold text-xs rounded-lg bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border-cyan-500 text-cyan-300 hover:bg-cyan-500/30 hover:shadow-lg hover:shadow-cyan-500/30`}
               >
